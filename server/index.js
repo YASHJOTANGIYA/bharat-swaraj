@@ -12,7 +12,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+// CORS Configuration
+const corsOptions = {
+    origin: [
+        'http://localhost:5173',
+        'https://bharat-swaraj-8c29.vercel.app'  // Add your Vercel URL here
+    ],
+    credentials: true
+};
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
 app.use('/uploads', express.static('uploads'));
