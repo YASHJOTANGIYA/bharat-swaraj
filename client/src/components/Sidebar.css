@@ -1,0 +1,137 @@
+.sidebar {
+    position: fixed;
+    top: 140px;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);
+    border-right: 1px solid #cbd5e1;
+    z-index: 40;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
+}
+
+.sidebar-closed {
+    transform: translateX(-100%);
+}
+
+.sidebar-open {
+    transform: translateX(0);
+}
+
+.sidebar-content {
+    padding: 2rem 1.25rem;
+}
+
+.sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1rem 1.25rem;
+    color: #1e293b;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    font-size: 1rem;
+    position: relative;
+    letter-spacing: 0.01em;
+}
+
+.sidebar-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 0;
+    background: linear-gradient(to bottom, #000000, #1e293b);
+    border-radius: 0 4px 4px 0;
+    transition: height 0.3s ease;
+}
+
+.sidebar-link:hover {
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    color: #000000;
+    transform: translateX(6px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar-link:hover::before {
+    height: 70%;
+}
+
+.sidebar-link svg {
+    transition: all 0.3s ease;
+    width: 22px;
+    height: 22px;
+    stroke-width: 2.5;
+}
+
+.sidebar-link:hover svg {
+    transform: scale(1.15);
+    color: #000000;
+}
+
+.sidebar-link-active {
+    background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+    color: #000000;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.sidebar-link-active::before {
+    height: 85%;
+}
+
+.sidebar-link-active:hover {
+    background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+    color: #000000;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-link-active svg {
+    color: #000000;
+}
+
+/* Scrollbar styling for sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Mobile responsive */
+@media (max-width: 1023px) {
+    .sidebar {
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+    }
+}
+
+@media (min-width: 1024px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+}

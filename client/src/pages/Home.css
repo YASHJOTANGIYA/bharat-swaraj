@@ -1,0 +1,119 @@
+.home-container {
+    min-height: 100vh;
+    padding-bottom: 4rem;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.home-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+    margin-top: 0;
+    position: relative;
+}
+
+.home-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+    border-radius: 2px;
+}
+
+.home-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0;
+    letter-spacing: -0.01em;
+}
+
+.home-icon {
+    color: #f97316;
+    filter: drop-shadow(0 2px 4px rgba(249, 115, 22, 0.15));
+}
+
+.home-subtitle {
+    color: #64748b;
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+.home-trending-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 1.125rem;
+    border-radius: 9999px;
+    background-color: #ffffff;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+}
+
+.home-trending-btn:hover {
+    background-color: #ffffff;
+    border-color: #2563eb;
+    color: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 10px -3px rgba(37, 99, 235, 0.12);
+}
+
+/* Main Layout */
+.home-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+    .home-content-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 3.5rem;
+        align-items: start;
+    }
+}
+
+/* News List (Single Column) */
+.home-news-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Sidebar */
+.home-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: sticky;
+    top: 120px;
+}
+
+/* Loading & Empty States */
+.loading-container,
+.empty-state {
+    text-align: center;
+    padding: 6rem 0;
+    color: #94a3b8;
+    background: #f8fafc;
+    border-radius: 1.5rem;
+    border: 2px dashed #e2e8f0;
+}
