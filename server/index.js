@@ -43,6 +43,7 @@ app.use('/api/econtent', require('./routes/econtent'));
 app.use('/api/general', require('./routes/general'));
 app.use('/api/youtube', require('./routes/youtube'));
 app.use('/api/comments', require('./routes/comments'));
+app.use('/api/import', require('./routes/importYouTube'));
 
 app.get('/', (req, res) => {
     res.send('Bharat Swaraj API is running');
