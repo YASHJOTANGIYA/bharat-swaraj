@@ -29,6 +29,16 @@ const detectCategory = (title, description) => {
     return 'india';
 };
 
+// Test endpoint
+router.get('/test', (req, res) => {
+    res.json({
+        success: true,
+        message: 'Import route is working!',
+        apiKey: YOUTUBE_API_KEY ? 'API Key is set' : 'API Key is missing',
+        channelHandle: CHANNEL_HANDLE
+    });
+});
+
 // Import latest videos from channel
 router.post('/import-channel', async (req, res) => {
     try {
