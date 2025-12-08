@@ -1,0 +1,14 @@
+.econtent-delete-btn {
+    background: transparent;
+    border: none;
+    color: #666666;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.econtent-delete-btn:hover {
+    background-color: #ff4444;
+    color: #ffffff;
+}

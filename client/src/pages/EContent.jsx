@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { FileText, Plus, X, Upload, Calendar, Share2 } from 'lucide-react';
+import { FileText, Plus, X, Upload, Calendar, Share2, Trash2 } from 'lucide-react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import './EContent.css';
+import './econtent-delete.css';
 
 // Configure PDF worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -100,6 +101,28 @@ const EContent = () => {
         window.open(url, '_blank');
     };
 
+    const handleDelete = async (id, title) => {
+        if (!window.confirm(`Are you sure you want to delete "${title}"?`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/econtent/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('E-Content deleted successfully');
+                fetchEContents(); // Refresh the list
+            } else {
+                alert('Failed to delete e-content');
+            }
+        } catch (error) {
+            console.error('Error deleting e-content:', error);
+            alert('Failed to delete e-content');
+        }
+    };
+
     return (
         <div className="econtent-page">
             <div className="econtent-header">
@@ -151,9 +174,23 @@ const EContent = () => {
                                             <Calendar size={14} />
                                             {new Date(item.date).toLocaleDateString()}
                                         </div>
-                                        <button className="econtent-share-btn">
-                                            <Share2 size={16} />
-                                        </button>
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <button className="econtent-share-btn">
+                                                <Share2 size={16} />
+                                            </button>
+                                            {user?.role === 'admin' && (
+                                                <button
+                                                    className="econtent-delete-btn"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDelete(item._id, item.title);
+                                                    }}
+                                                    title="Delete E-Content"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -68,7 +68,7 @@ const Navbar = () => {
 
     const handleEContentClick = () => {
         if (user) {
-            setShowCityModal(true);
+            navigate('/e-content/rajkot');
         } else {
             setLoginStep('landing');
         }

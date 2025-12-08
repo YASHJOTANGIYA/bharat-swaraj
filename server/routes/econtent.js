@@ -40,4 +40,20 @@ router.post('/', async (req, res) => {
     }
 });
 
+// Delete e-content
+router.delete('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedEContent = await EContent.findByIdAndDelete(id);
+
+        if (!deletedEContent) {
+            return res.status(404).json({ message: 'E-Content not found' });
+        }
+
+        res.json({ message: 'E-Content deleted successfully', deletedEContent });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 module.exports = router;
