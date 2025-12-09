@@ -5,7 +5,7 @@ const SEO = ({ title, description, image, url, type = 'article' }) => {
     const siteTitle = 'Bharat Swaraj';
     const defaultDescription = 'Empowering the nation with truth, integrity, and unbiased journalism.';
     const defaultImage = '/logo.png'; // Make sure this exists in public folder
-    const siteUrl = 'https://bharat-swaraj.vercel.app';
+    const siteUrl = 'https://www.bharatswarajweekly.com';
 
     const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
     const metaDescription = description || defaultDescription;
