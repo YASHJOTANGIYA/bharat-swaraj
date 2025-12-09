@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../config/api';
 import { Trash2, Plus, X, Calendar, Tag, Upload, Image as ImageIcon } from 'lucide-react';
 import './Admin.css';
 
@@ -30,7 +31,7 @@ const Admin = () => {
 
     const fetchNews = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/news');
+            const res = await axios.get(`${API_URL}/api/news`);
             setNewsList(res.data);
         } catch (err) {
             console.error('Error fetching news:', err);
@@ -39,7 +40,7 @@ const Admin = () => {
 
     const fetchComments = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/comments');
+            const res = await axios.get(`${API_URL}/api/comments`);
             setCommentsList(res.data);
         } catch (err) {
             console.error('Error fetching comments:', err);
@@ -48,7 +49,7 @@ const Admin = () => {
 
     const fetchSubscribers = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/general/subscribers');
+            const res = await axios.get(`${API_URL}/api/general/subscribers`);
             setSubscribersList(res.data);
         } catch (err) {
             console.error('Error fetching subscribers:', err);
@@ -58,7 +59,7 @@ const Admin = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this news item?')) {
             try {
-                await axios.delete(`http://localhost:5000/api/news/${id}`);
+                await axios.delete(`${API_URL}/api/news/${id}`);
                 fetchNews();
             } catch (err) {
                 console.error('Error deleting news:', err);
@@ -69,7 +70,7 @@ const Admin = () => {
     const handleDeleteComment = async (id) => {
         if (window.confirm('Are you sure you want to delete this comment?')) {
             try {
-                await axios.delete(`http://localhost:5000/api/comments/${id}`);
+                await axios.delete(`${API_URL}/api/comments/${id}`);
                 fetchComments();
             } catch (err) {
                 console.error('Error deleting comment:', err);
@@ -80,7 +81,7 @@ const Admin = () => {
     const handleDeleteSubscriber = async (id) => {
         if (window.confirm('Are you sure you want to remove this subscriber?')) {
             try {
-                await axios.delete(`http://localhost:5000/api/general/subscribers/${id}`);
+                await axios.delete(`${API_URL}/api/general/subscribers/${id}`);
                 fetchSubscribers();
             } catch (err) {
                 console.error('Error deleting subscriber:', err);
@@ -144,7 +145,7 @@ const Admin = () => {
 
         setUploading(true);
         try {
-            const res = await axios.post('http://localhost:5000/api/upload', formDataUpload, {
+            const res = await axios.post(`${API_URL}/api/upload`, formDataUpload, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             setFormData({ ...formData, image: res.data.imageUrl });
@@ -170,7 +171,7 @@ const Admin = () => {
 
         setUploadingVideo(true);
         try {
-            const res = await axios.post('http://localhost:5000/api/upload', formDataUpload, {
+            const res = await axios.post(`${API_URL}/api/upload`, formDataUpload, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
@@ -186,7 +187,7 @@ const Admin = () => {
                     const thumbnailFormData = new FormData();
                     thumbnailFormData.append('image', thumbnailBlob, 'video-thumbnail.jpg');
 
-                    const thumbnailRes = await axios.post('http://localhost:5000/api/upload', thumbnailFormData, {
+                    const thumbnailRes = await axios.post(`${API_URL}/api/upload`, thumbnailFormData, {
                         headers: { 'Content-Type': 'multipart/form-data' }
                     });
 
@@ -213,7 +214,7 @@ const Admin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/news', formData);
+            await axios.post(`${API_URL}/api/news`, formData);
             setShowForm(false);
             setFormData({ title: '', summary: '', content: '', category: 'General', image: '', video: '' });
             setImagePreview('');

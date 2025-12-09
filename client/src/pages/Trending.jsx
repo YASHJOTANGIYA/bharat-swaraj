@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NewsCard from '../components/NewsCard';
 import axios from 'axios';
+import API_URL from '../config/api';
 import { TrendingUp } from 'lucide-react';
 import './Home.css';
 
@@ -13,7 +14,7 @@ const Trending = () => {
 
     const fetchNews = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/news');
+            const res = await axios.get(`${API_URL}/api/news`);
             // Sort by views (most viewed first) or by date if views don't exist
             const sorted = res.data.sort((a, b) => {
                 return (b.views || 0) - (a.views || 0) || new Date(b.createdAt) - new Date(a.createdAt);

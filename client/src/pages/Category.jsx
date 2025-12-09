@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../config/api';
 import NewsCard from '../components/NewsCard';
 import Weather from '../components/Weather';
 import Horoscope from '../components/Horoscope';
@@ -25,7 +26,7 @@ const Category = () => {
     const fetchCategoryNews = async () => {
         setLoading(true);
         try {
-            const res = await axios.get('http://localhost:5000/api/news');
+            const res = await axios.get(`${API_URL}/api/news`);
             console.log('All news:', res.data);
             console.log('Filtering for category:', category);
 

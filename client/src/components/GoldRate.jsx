@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, RefreshCw, Zap } from 'lucide-react';
 import axios from 'axios';
+import API_URL from '../config/api';
 import './GoldRate.css';
 
 const GoldRate = () => {
@@ -14,7 +15,7 @@ const GoldRate = () => {
 
     const fetchRates = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/general/gold-rate');
+            const res = await axios.get(`${API_URL}/api/general/gold-rate`);
             const data = res.data;
 
             if (!data || !data.gold24k) {

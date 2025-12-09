@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../config/api';
 import NewsCard from '../components/NewsCard';
 import { Search } from 'lucide-react';
 import SEO from '../components/SEO';
@@ -15,7 +16,7 @@ const SearchResults = () => {
     const searchNews = React.useCallback(async () => {
         setLoading(true);
         try {
-            const res = await axios.get('http://localhost:5000/api/news');
+            const res = await axios.get(`${API_URL}/api/news`);
             console.log('Total news items:', res.data.length);
             console.log('Search query:', query);
 

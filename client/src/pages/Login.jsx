@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../config/api';
 import './Login.css';
 
 const Login = () => {
@@ -19,7 +20,7 @@ const Login = () => {
         setError('');
 
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', formData);
+            const res = await axios.post(`${API_URL}/api/auth/login`, formData);
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(res.data.user));
 
@@ -111,7 +112,7 @@ const Login = () => {
                     <button
                         type="button"
                         className="google-signin-btn"
-                        onClick={() => window.location.href = 'http://localhost:5000/api/auth/google'}
+                        onClick={() => window.location.href = `${API_URL}/api/auth/google`}
                     >
                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M17.64 9.20443C17.64 8.56625 17.5827 7.95262 17.4764 7.36353H9V10.8449H13.8436C13.635 11.9699 13.0009 12.9231 12.0477 13.5613V15.8194H14.9564C16.6582 14.2526 17.64 11.9453 17.64 9.20443Z" fill="#4285F4" />

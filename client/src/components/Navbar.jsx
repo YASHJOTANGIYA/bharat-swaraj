@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, User, Bell, ShieldCheck, Newspaper, X } from 'lucide-react';
+import API_URL from '../config/api';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import './Navbar.css';
@@ -105,7 +106,7 @@ const Navbar = () => {
 
     const fetchNotifications = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/general/notifications?t=${new Date().getTime()}`);
+            const response = await fetch(`${API_URL}/api/general/notifications?t=${new Date().getTime()}`);
             if (response.ok) {
                 const data = await response.json();
                 setNotifications(data);
@@ -118,7 +119,7 @@ const Navbar = () => {
                             <div className="mac-notification-container" onClick={() => navigate(latest.link)}>
                                 <div className="mac-image-container">
                                     {latest.image ? (
-                                        <img src={`http://localhost:5000${latest.image}`} alt="" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+                                        <img src={`${API_URL}${latest.image}`} alt="" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
                                     ) : null}
                                     <Newspaper size={24} style={{ display: latest.image ? 'none' : 'block' }} />
                                 </div>

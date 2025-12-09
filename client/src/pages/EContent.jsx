@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FileText, Plus, X, Upload, Calendar, Share2, Trash2 } from 'lucide-react';
+import API_URL from '../config/api';
 import { Document, Page, pdfjs } from 'react-pdf';
 import './EContent.css';
 import './econtent-delete.css';
@@ -33,7 +34,7 @@ const EContent = () => {
 
     const fetchEContents = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/econtent/${city}`);
+            const response = await fetch(`${API_URL}/api/econtent/${city}`);
             if (response.ok) {
                 const data = await response.json();
                 setEContents(data);
@@ -61,7 +62,7 @@ const EContent = () => {
             const formData = new FormData();
             formData.append('image', file); // Using 'image' key as per upload route config
 
-            const uploadRes = await fetch('http://localhost:5000/api/upload', {
+            const uploadRes = await fetch(`${API_URL}/api/upload`, {
                 method: 'POST',
                 body: formData
             });
@@ -71,7 +72,7 @@ const EContent = () => {
             const pdfUrl = uploadData.imageUrl; // The route returns { imageUrl: ... }
 
             // 2. Create EContent Record
-            const eContentRes = await fetch('http://localhost:5000/api/econtent', {
+            const eContentRes = await fetch(`${API_URL}/api/econtent`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -107,7 +108,7 @@ const EContent = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/api/econtent/${id}`, {
+            const response = await fetch(`${API_URL}/api/econtent/${id}`, {
                 method: 'DELETE'
             });
 

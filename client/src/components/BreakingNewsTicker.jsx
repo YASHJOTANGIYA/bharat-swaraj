@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../config/api';
 import './BreakingNewsTicker.css';
 
 const BreakingNewsTicker = () => {
@@ -16,7 +17,7 @@ const BreakingNewsTicker = () => {
 
     const fetchBreakingNews = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/news?limit=5&sort=-createdAt');
+            const response = await fetch(`${API_URL}/api/news?limit=5&sort=-createdAt`);
             if (response.ok) {
                 const data = await response.json();
                 // Get the 5 most recent news items

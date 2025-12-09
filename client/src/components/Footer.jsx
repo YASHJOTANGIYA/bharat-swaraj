@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Youtube, Mail, ArrowRight, Send, MessageCircle } from 'lucide-react';
+import API_URL from '../config/api';
 import './Footer.css';
 
 const Footer = () => {
@@ -12,7 +13,7 @@ const Footer = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/api/general/subscribe', {
+            const response = await fetch(`${API_URL}/api/general/subscribe`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })

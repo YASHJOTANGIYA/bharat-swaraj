@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../config/api';
 import { MessageSquare, Send, User } from 'lucide-react';
 import { toast } from 'react-toastify';
 import './Comments.css';
@@ -21,7 +22,7 @@ const Comments = ({ newsId }) => {
 
     const fetchComments = async () => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/comments/${newsId}`);
+            const res = await axios.get(`${API_URL}/api/comments/${newsId}`);
             setComments(res.data);
         } catch (err) {
             console.error('Error fetching comments:', err);
@@ -40,7 +41,7 @@ const Comments = ({ newsId }) => {
 
         setSubmitting(true);
         try {
-            const res = await axios.post('http://localhost:5000/api/comments', {
+            const res = await axios.post(`${API_URL}/api/comments`, {
                 newsId,
                 userId: user.id || user._id,
                 username: user.username,

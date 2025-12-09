@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../config/api';
 import { Calendar, User, Share2, Bookmark, ArrowLeft, Tag, X, Copy, Check } from 'lucide-react';
 import Comments from '../components/Comments';
 import SEO from '../components/SEO';
@@ -24,7 +25,7 @@ const Article = () => {
 
     const fetchArticle = async () => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/news/${id}`);
+            const res = await axios.get(`${API_URL}/api/news/${id}`);
             setArticle(res.data);
 
             // Fetch related news based on category
@@ -40,7 +41,7 @@ const Article = () => {
 
     const fetchRelatedNews = async (category, currentId) => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/news`, {
+            const res = await axios.get(`${API_URL}/api/news`, {
                 params: {
                     category: category,
                     limit: 3,

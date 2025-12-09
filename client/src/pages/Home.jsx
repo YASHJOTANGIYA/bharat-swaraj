@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../config/api';
 import NewsCard from '../components/NewsCard';
 import { Flame, TrendingUp } from 'lucide-react';
 import './Home.css';
@@ -21,7 +22,7 @@ const Home = () => {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/news');
+                const res = await axios.get(`${API_URL}/api/news`);
                 setNewsItems(res.data);
             } catch (err) {
                 console.error('Error fetching news:', err);
