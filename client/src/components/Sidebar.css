@@ -143,29 +143,6 @@
         backdrop-filter: blur(2px);
     }
 
-    .sidebar-overlay.visible {
-        opacity: 1;
-        pointer-events: auto;
-    }
-}
-
-/* Mobile responsive */
-@media (max-width: 1023px) {
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        width: 280px;
-        z-index: 100;
-        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
-        background: #f1f5f9;
-    }
-
-    .sidebar-closed {
-        transform: translateX(-100%);
-    }
-
     .sidebar-open {
         transform: translateX(0);
     }

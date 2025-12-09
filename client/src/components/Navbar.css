@@ -425,20 +425,40 @@
 
 @media (max-width: 640px) {
     .navbar {
-        padding: 0 1rem;
+        padding: 0 0.75rem;
+        height: 70px;
     }
 
     .navbar-menu-btn {
         display: block;
+        padding: 0.25rem;
+    }
+
+    .navbar-logo-image {
+        height: 45px !important;
     }
 
     .navbar-econtent-btn span,
-    .navbar-admin-link span {
+    .navbar-admin-link span,
+    .btn-primary span {
         display: none;
     }
 
     .navbar-user-menu span {
         display: none;
+    }
+
+    .navbar-right {
+        gap: 0.5rem;
+    }
+
+    .btn {
+        padding: 0.5rem;
+    }
+
+    .navbar-econtent-btn,
+    .navbar-admin-link {
+        padding: 0.5rem;
     }
 }
 
