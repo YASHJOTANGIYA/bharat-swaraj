@@ -126,12 +126,34 @@
 /* Mobile responsive */
 @media (max-width: 1023px) {
     .sidebar {
-        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 280px;
+        z-index: 100;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+        background: #f1f5f9;
+    }
+
+    .sidebar-closed {
+        transform: translateX(-100%);
+    }
+
+    .sidebar-open {
+        transform: translateX(0);
     }
 }
 
 @media (min-width: 1024px) {
     .sidebar {
+        transform: translateX(0) !important;
+        top: 140px;
+        z-index: 40;
+        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .sidebar-closed {
         transform: translateX(0);
     }
 }

@@ -18,7 +18,23 @@
 .navbar-left {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
+}
+
+.navbar-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.navbar-menu-btn:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
 }
 
 .navbar-logo {
@@ -410,6 +426,10 @@
 @media (max-width: 640px) {
     .navbar {
         padding: 0 1rem;
+    }
+
+    .navbar-menu-btn {
+        display: block;
     }
 
     .navbar-econtent-btn span,

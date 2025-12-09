@@ -1,10 +1,10 @@
 import React from 'react';
-import { Search, User, Bell, ShieldCheck, Newspaper, X } from 'lucide-react';
+import { Search, User, Bell, ShieldCheck, Newspaper, X, Menu } from 'lucide-react';
 import API_URL from '../config/api';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import './Navbar.css';
-const Navbar = () => {
+const Navbar = ({ toggleSidebar }) => {
     const [user, setUser] = React.useState(null);
     const navigate = useNavigate();
     const location = useLocation();
@@ -169,6 +169,9 @@ const Navbar = () => {
             <nav className="navbar">
                 {/* Left Section */}
                 <div className="navbar-left">
+                    <button className="navbar-menu-btn" onClick={toggleSidebar}>
+                        <Menu size={24} />
+                    </button>
                     <Link to="/" className="navbar-logo">
                         <img
                             src="/logo.png"

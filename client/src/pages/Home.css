@@ -7,6 +7,13 @@
     padding-right: 2rem;
 }
 
+@media (max-width: 768px) {
+    .home-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
 .home-header {
     display: flex;
     align-items: center;
