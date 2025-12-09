@@ -9,6 +9,8 @@ const passport = require('./config/passport');
 const { scheduleYouTubeSync } = require('./scheduler/youtubeSync');
 
 const app = express();
+// Trust proxy is required for Render/Heroku to correctly detect https protocol
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5000;
 
 // Middleware

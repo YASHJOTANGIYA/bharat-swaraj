@@ -13,10 +13,12 @@ const isGoogleConfigured = process.env.GOOGLE_CLIENT_ID &&
     process.env.GOOGLE_CLIENT_SECRET !== 'your_google_client_secret_here';
 
 if (isGoogleConfigured) {
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+
     router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
     router.get('/google/callback',
-        passport.authenticate('google', { session: false, failureRedirect: 'http://localhost:5173/login?error=Authentication failed' }),
+        passport.authenticate('google', { session: false, failureRedirect: `${clientUrl}/login?error=Authentication failed` }),
         googleCallback
     );
 } else {
@@ -26,7 +28,8 @@ if (isGoogleConfigured) {
     });
 
     router.get('/google/callback', (req, res) => {
-        res.redirect('http://localhost:5173/login?error=Google OAuth not configured');
+        const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+        res.redirect(`${clientUrl}/login?error=Google OAuth not configured`);
     });
 }
 
