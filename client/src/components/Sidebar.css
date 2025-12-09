@@ -123,6 +123,32 @@
     background: #94a3b8;
 }
 
+.sidebar-overlay {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    .sidebar-overlay {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 35;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(2px);
+    }
+
+    .sidebar-overlay.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
 /* Mobile responsive */
 @media (max-width: 1023px) {
     .sidebar {

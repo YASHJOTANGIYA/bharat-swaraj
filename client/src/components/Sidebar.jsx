@@ -3,7 +3,7 @@ import { Home, Globe, TrendingUp, Cpu, Shield, PlayCircle, Bookmark } from 'luci
 import { Link, useLocation } from 'react-router-dom';
 import './Sidebar.css';
 
-const Sidebar = ({ isOpen }) => {
+const Sidebar = ({ isOpen, closeSidebar }) => {
     const location = useLocation();
 
     const links = [
@@ -30,6 +30,7 @@ const Sidebar = ({ isOpen }) => {
                                 <Link
                                     to={link.path}
                                     className={`sidebar-link ${isActive ? 'sidebar-link-active' : ''}`}
+                                    onClick={closeSidebar}
                                 >
                                     <Icon size={20} />
                                     <span>{link.name}</span>
