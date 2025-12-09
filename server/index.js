@@ -19,7 +19,9 @@ const corsOptions = {
     origin: [
         'http://localhost:5173',
         'https://bharat-swaraj-8c29.vercel.app',
-        'https://bharat-swaraj.vercel.app'
+        'https://bharat-swaraj.vercel.app',
+        'https://www.bharatswarajweekly.com',
+        'https://bharatswarajweekly.com'
     ],
     credentials: true
 };
