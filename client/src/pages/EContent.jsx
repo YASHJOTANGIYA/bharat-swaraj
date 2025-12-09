@@ -99,7 +99,9 @@ const EContent = () => {
     };
 
     const handleOpenPdf = (url) => {
-        window.open(url, '_blank');
+        // Ensure URL is absolute
+        const fullUrl = url.startsWith('http') ? url : `${API_URL}${url}`;
+        window.open(fullUrl, '_blank');
     };
 
     const handleDelete = async (id, title) => {
@@ -148,7 +150,7 @@ const EContent = () => {
                             <div key={item._id} className="econtent-card">
                                 <div className="econtent-thumbnail" onClick={() => handleOpenPdf(item.pdfUrl)}>
                                     <Document
-                                        file={item.pdfUrl}
+                                        file={item.pdfUrl.startsWith('http') ? item.pdfUrl : `${API_URL}${item.pdfUrl}`}
                                         loading={<div className="pdf-loading">Loading Preview...</div>}
                                         error={<div className="pdf-error">Preview Unavailable</div>}
                                         className="pdf-document"
