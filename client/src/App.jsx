@@ -27,6 +27,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/auth/google/callback" element={<GoogleCallback />} />
+          <Route path="/api/auth/google/callback" element={<GoogleCallback />} />
           <Route path="/register" element={<Register />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/category/:category" element={<Category />} />
