@@ -54,13 +54,17 @@ exports.googleCallback = async (req, res) => {
         // User is available in req.user from passport
         const user = req.user;
 
+        // Determine client URL based on environment
+        const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+
         // Create token
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         // Redirect to frontend with token
-        res.redirect(`http://localhost:5173/auth/google/callback?token=${token}&user=${encodeURIComponent(JSON.stringify({ id: user._id, username: user.username, email: user.email, role: user.role }))}`);
+        res.redirect(`${clientUrl}/auth/google/callback?token=${token}&user=${encodeURIComponent(JSON.stringify({ id: user._id, username: user.username, email: user.email, role: user.role }))}`);
     } catch (err) {
-        res.redirect('http://localhost:5173/login?error=Authentication failed');
+        const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+        res.redirect(`${clientUrl}/login?error=Authentication failed`);
     }
 };
 
