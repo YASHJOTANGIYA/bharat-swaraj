@@ -43,7 +43,8 @@ router.post('/upload', upload.single('image'), (req, res) => {
             return res.status(400).json({ message: 'No file uploaded' });
         }
 
-        const imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+        // Return relative path so frontend can prepend correct API URL
+        const imageUrl = `/uploads/${req.file.filename}`;
         res.json({ imageUrl });
     } catch (err) {
         res.status(500).json({ message: 'Upload failed', error: err.message });

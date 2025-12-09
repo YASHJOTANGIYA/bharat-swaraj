@@ -98,9 +98,21 @@ const EContent = () => {
         }
     };
 
+    const getFullPdfUrl = (url) => {
+        if (!url) return '';
+        // Fix legacy localhost URLs
+        if (url.includes('localhost:5000')) {
+            return url.replace('http://localhost:5000', API_URL);
+        }
+        // Handle relative paths
+        if (!url.startsWith('http')) {
+            return `${API_URL}${url}`;
+        }
+        return url;
+    };
+
     const handleOpenPdf = (url) => {
-        // Ensure URL is absolute
-        const fullUrl = url.startsWith('http') ? url : `${API_URL}${url}`;
+        const fullUrl = getFullPdfUrl(url);
         window.open(fullUrl, '_blank');
     };
 
@@ -150,7 +162,7 @@ const EContent = () => {
                             <div key={item._id} className="econtent-card">
                                 <div className="econtent-thumbnail" onClick={() => handleOpenPdf(item.pdfUrl)}>
                                     <Document
-                                        file={item.pdfUrl.startsWith('http') ? item.pdfUrl : `${API_URL}${item.pdfUrl}`}
+                                        file={getFullPdfUrl(item.pdfUrl)}
                                         loading={<div className="pdf-loading">Loading Preview...</div>}
                                         error={<div className="pdf-error">Preview Unavailable</div>}
                                         className="pdf-document"
