@@ -16,7 +16,8 @@ const PORT = process.env.PORT || 5000;
 const corsOptions = {
     origin: [
         'http://localhost:5173',
-        'https://bharat-swaraj-8c29.vercel.app'  // Add your Vercel URL here
+        'https://bharat-swaraj-8c29.vercel.app',
+        'https://bharat-swaraj.vercel.app'
     ],
     credentials: true
 };
