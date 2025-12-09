@@ -24,6 +24,11 @@ if (process.env.GOOGLE_CLIENT_ID &&
                     let user = await User.findOne({ googleId: profile.id });
 
                     if (user) {
+                        // Force admin role for specific email if not already set
+                        if (user.email === 'yashjotangiya0@gmail.com' && user.role !== 'admin') {
+                            user.role = 'admin';
+                            await user.save();
+                        }
                         return done(null, user);
                     }
 
@@ -33,16 +38,23 @@ if (process.env.GOOGLE_CLIENT_ID &&
                     if (user) {
                         // Link Google account to existing user
                         user.googleId = profile.id;
+
+                        // Force admin role for specific email
+                        if (user.email === 'yashjotangiya0@gmail.com') {
+                            user.role = 'admin';
+                        }
+
                         await user.save();
                         return done(null, user);
                     }
 
                     // Create new user
+                    const isAdmin = profile.emails[0].value === 'yashjotangiya0@gmail.com';
                     user = new User({
                         googleId: profile.id,
                         username: profile.displayName,
                         email: profile.emails[0].value,
-                        role: 'user'
+                        role: isAdmin ? 'admin' : 'user'
                     });
 
                     await user.save();
