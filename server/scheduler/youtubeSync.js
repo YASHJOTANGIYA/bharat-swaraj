@@ -18,15 +18,15 @@ const scheduleYouTubeSync = () => {
     console.log('⏰ YouTube auto-sync scheduled: Every day at 2:00 AM');
 
     // Optional: Run sync immediately on server start
-    setTimeout(async () => {
-        console.log('🚀 Running initial YouTube sync...');
-        try {
-            const response = await axios.post('http://localhost:5000/api/youtube/sync-youtube');
-            console.log('✅ Initial sync completed:', response.data);
-        } catch (error) {
-            console.error('❌ Initial sync failed:', error.message);
-        }
-    }, 5000); // Wait 5 seconds after server starts
+    // setTimeout(async () => {
+    //     console.log('🚀 Running initial YouTube sync...');
+    //     try {
+    //         const response = await axios.post('http://localhost:5000/api/youtube/sync-youtube');
+    //         console.log('✅ Initial sync completed:', response.data);
+    //     } catch (error) {
+    //         console.error('❌ Initial sync failed:', error.message);
+    //     }
+    // }, 5000); // Wait 5 seconds after server starts
 };
 
 module.exports = { scheduleYouTubeSync };
