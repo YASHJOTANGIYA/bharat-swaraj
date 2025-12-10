@@ -7,6 +7,7 @@ dotenv.config();
 
 const passport = require('./config/passport');
 const { scheduleYouTubeSync } = require('./scheduler/youtubeSync');
+const { updateShortsStatus } = require('./routes/importYouTube');
 
 const app = express();
 // Trust proxy is required for Render/Heroku to correctly detect https protocol
@@ -32,7 +33,6 @@ app.use('/uploads', express.static('uploads'));
 app.use(passport.initialize());
 
 // Database Connection
-// Database Connection
 const mongoURI = process.env.MONGO_LIVE || process.env.MONGO_URI;
 
 if (!mongoURI) {
@@ -45,6 +45,11 @@ mongoose.connect(mongoURI)
         console.log('MongoDB Connected');
         // Start YouTube auto-sync scheduler after DB connection
         scheduleYouTubeSync();
+
+        // Run Shorts migration 10 seconds after startup
+        setTimeout(() => {
+            updateShortsStatus();
+        }, 10000);
     })
     .catch(err => console.error('MongoDB Connection Error:', err));
 
@@ -56,7 +61,7 @@ app.use('/api/econtent', require('./routes/econtent'));
 app.use('/api/general', require('./routes/general'));
 app.use('/api/youtube', require('./routes/youtube'));
 app.use('/api/comments', require('./routes/comments'));
-app.use('/api/import', require('./routes/importYouTube'));
+app.use('/api/import', require('./routes/importYouTube').router);
 
 app.get('/', (req, res) => {
     res.send('Bharat Swaraj API is running');
