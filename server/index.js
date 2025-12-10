@@ -32,7 +32,15 @@ app.use('/uploads', express.static('uploads'));
 app.use(passport.initialize());
 
 // Database Connection
-mongoose.connect(process.env.MONGO_LIVE)
+// Database Connection
+const mongoURI = process.env.MONGO_LIVE || process.env.MONGO_URI;
+
+if (!mongoURI) {
+    console.error('❌ MongoDB connection error: MONGO_LIVE or MONGO_URI is not defined in environment variables.');
+    process.exit(1);
+}
+
+mongoose.connect(mongoURI)
     .then(() => {
         console.log('MongoDB Connected');
         // Start YouTube auto-sync scheduler after DB connection
