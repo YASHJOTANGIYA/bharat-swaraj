@@ -22,7 +22,17 @@ router.get('/', async (req, res) => {
 
         // Filter by isShort (true/false)
         if (req.query.isShort !== undefined) {
-            query.isShort = req.query.isShort === 'true';
+            const isShort = req.query.isShort === 'true';
+            if (isShort) {
+                query.isShort = true;
+            } else {
+                // For regular news, include false OR missing/null
+                query.$or = [
+                    { isShort: false },
+                    { isShort: { $exists: false } },
+                    { isShort: null }
+                ];
+            }
         }
 
         let newsQuery = News.find(query).sort({ createdAt: -1 });
