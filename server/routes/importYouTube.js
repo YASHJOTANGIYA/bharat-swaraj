@@ -109,7 +109,7 @@ router.post('/import-channel', async (req, res) => {
                 params: {
                     key: YOUTUBE_API_KEY,
                     id: videoId,
-                    part: 'snippet,statistics'
+                    part: 'snippet,statistics,contentDetails'
                 }
             });
 
@@ -120,6 +120,17 @@ router.post('/import-channel', async (req, res) => {
             const videoData = detailsResponse.data.items[0];
             const videoSnippet = videoData.snippet;
             const category = detectCategory(videoSnippet.title, videoSnippet.description || '');
+
+            // Check if video is a Short (duration <= 60 seconds)
+            const duration = videoData.contentDetails.duration;
+            const isShort = (duration) => {
+                const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+                const hours = (parseInt(match[1]) || 0);
+                const minutes = (parseInt(match[2]) || 0);
+                const seconds = (parseInt(match[3]) || 0);
+                const totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+                return totalSeconds <= 60;
+            };
 
             // Create news article
             const newsArticle = new News({
@@ -133,6 +144,7 @@ router.post('/import-channel', async (req, res) => {
                 youtubeUrl: `https://www.youtube.com/watch?v=${videoId}`,
                 views: parseInt(videoData.statistics.viewCount) || 0,
                 publishedAt: new Date(videoSnippet.publishedAt),
+                isShort: isShort(duration),
                 createdAt: new Date()
             });
 
@@ -237,7 +249,7 @@ router.get('/import-channel', async (req, res) => {
                 params: {
                     key: YOUTUBE_API_KEY,
                     id: videoId,
-                    part: 'snippet,statistics'
+                    part: 'snippet,statistics,contentDetails'
                 }
             });
 
@@ -248,6 +260,17 @@ router.get('/import-channel', async (req, res) => {
             const videoData = detailsResponse.data.items[0];
             const videoSnippet = videoData.snippet;
             const category = detectCategory(videoSnippet.title, videoSnippet.description || '');
+
+            // Check if video is a Short (duration <= 60 seconds)
+            const duration = videoData.contentDetails.duration;
+            const isShort = (duration) => {
+                const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+                const hours = (parseInt(match[1]) || 0);
+                const minutes = (parseInt(match[2]) || 0);
+                const seconds = (parseInt(match[3]) || 0);
+                const totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+                return totalSeconds <= 60;
+            };
 
             const newsArticle = new News({
                 title: videoSnippet.title,
@@ -260,6 +283,7 @@ router.get('/import-channel', async (req, res) => {
                 youtubeUrl: `https://www.youtube.com/watch?v=${videoId}`,
                 views: parseInt(videoData.statistics.viewCount) || 0,
                 publishedAt: new Date(videoSnippet.publishedAt),
+                isShort: isShort(duration),
                 createdAt: new Date()
             });
 

@@ -98,6 +98,17 @@ router.post('/sync-youtube', async (req, res) => {
                 const detectedCategory = detectCategory(snippet.title, snippet.description || '');
                 categoryCounts[detectedCategory] = (categoryCounts[detectedCategory] || 0) + 1;
 
+                // Check if video is a Short (duration <= 60 seconds)
+                const duration = videoData.contentDetails.duration; // Format: PT1M30S, PT59S, etc.
+                const isShort = (duration) => {
+                    const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+                    const hours = (parseInt(match[1]) || 0);
+                    const minutes = (parseInt(match[2]) || 0);
+                    const seconds = (parseInt(match[3]) || 0);
+                    const totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+                    return totalSeconds <= 60;
+                };
+
                 // Create news article
                 const newsArticle = new News({
                     title: snippet.title,
@@ -108,6 +119,7 @@ router.post('/sync-youtube', async (req, res) => {
                     youtubeUrl: `https://www.youtube.com/watch?v=${videoId}`,
                     views: parseInt(videoData.statistics.viewCount) || 0,
                     publishedAt: new Date(snippet.publishedAt),
+                    isShort: isShort(duration),
                     createdAt: new Date(snippet.publishedAt)
                 });
 

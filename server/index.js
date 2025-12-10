@@ -32,7 +32,7 @@ app.use('/uploads', express.static('uploads'));
 app.use(passport.initialize());
 
 // Database Connection
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_LIVE)
     .then(() => {
         console.log('MongoDB Connected');
         // Start YouTube auto-sync scheduler after DB connection

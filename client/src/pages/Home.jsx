@@ -14,6 +14,8 @@ import { usePageTitle } from '../hooks/usePageTitle';
 
 import SEO from '../components/SEO';
 
+import ShortsCarousel from '../components/ShortsCarousel';
+
 const Home = () => {
     usePageTitle('Home');
     const [newsItems, setNewsItems] = useState([]);
@@ -22,7 +24,7 @@ const Home = () => {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const res = await axios.get(`${API_URL}/api/news`);
+                const res = await axios.get(`${API_URL}/api/news?isShort=false`); // Only fetch regular news for main feed
                 setNewsItems(res.data);
             } catch (err) {
                 console.error('Error fetching news:', err);
@@ -50,6 +52,9 @@ const Home = () => {
                     Trending Now
                 </Link>
             </div>
+
+            {/* YouTube Shorts Carousel */}
+            <ShortsCarousel />
 
             <div className="home-content-wrapper">
                 {/* Main News Column */}

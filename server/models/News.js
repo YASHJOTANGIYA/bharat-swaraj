@@ -12,6 +12,7 @@ const newsSchema = new mongoose.Schema({
     youtubeVideoId: { type: String }, // YouTube video ID
     youtubeUrl: { type: String }, // Full YouTube URL
     publishedAt: { type: Date }, // Original publish date from YouTube
+    isShort: { type: Boolean, default: false }, // Identify if it's a YouTube Short
     createdAt: { type: Date, default: Date.now }
 });
 

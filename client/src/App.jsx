@@ -8,6 +8,7 @@ import Admin from './pages/Admin';
 import Category from './pages/Category';
 import Article from './pages/Article';
 import Trending from './pages/Trending';
+import Shorts from './pages/Shorts';
 import Saved from './pages/Saved';
 import SearchResults from './pages/SearchResults';
 import EContent from './pages/EContent';
@@ -34,6 +35,7 @@ function App() {
           <Route path="/article/:id" element={<Article />} />
           <Route path="/news/:id" element={<Article />} />
           <Route path="/trending" element={<Trending />} />
+          <Route path="/shorts" element={<Shorts />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/saved" element={<Saved />} />
           <Route path="/e-content/:city" element={<EContent />} />

@@ -20,6 +20,11 @@ router.get('/', async (req, res) => {
             query._id = { $ne: exclude };
         }
 
+        // Filter by isShort (true/false)
+        if (req.query.isShort !== undefined) {
+            query.isShort = req.query.isShort === 'true';
+        }
+
         let newsQuery = News.find(query).sort({ createdAt: -1 });
 
         // Limit results if provided
