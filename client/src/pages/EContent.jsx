@@ -64,7 +64,10 @@ const EContent = () => {
                 body: formData
             });
 
-            if (!uploadRes.ok) throw new Error('Upload failed');
+            if (!uploadRes.ok) {
+                const errorData = await uploadRes.json();
+                throw new Error(errorData.message || errorData.error || 'Upload failed');
+            }
             const uploadData = await uploadRes.json();
             const pdfUrl = uploadData.imageUrl; // The route returns { imageUrl: ... }
 
@@ -164,7 +167,20 @@ const EContent = () => {
                                     <Document
                                         file={getFullPdfUrl(item.pdfUrl)}
                                         loading={<div className="pdf-loading">Loading Preview...</div>}
-                                        error={<div className="pdf-error">Preview Unavailable</div>}
+                                        error={
+                                            <div className="pdf-error">
+                                                <p>Preview Unavailable</p>
+                                                <button
+                                                    className="view-pdf-btn"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleOpenPdf(item.pdfUrl);
+                                                    }}
+                                                >
+                                                    View PDF
+                                                </button>
+                                            </div>
+                                        }
                                         onLoadError={(error) => console.error('PDF Load Error:', error)}
                                         className="pdf-document"
                                     >
