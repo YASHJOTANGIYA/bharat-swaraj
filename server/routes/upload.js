@@ -1,52 +1,42 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const { v2: cloudinary } = require('cloudinary');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const dotenv = require('dotenv');
 
-// Create uploads directory if it doesn't exist
-const uploadsDir = 'uploads';
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir);
-}
+dotenv.config();
 
-// Configure multer for image uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/');
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Configure Storage
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'bharat-swaraj-uploads',
+        allowed_formats: ['jpg', 'png', 'jpeg', 'pdf', 'webp'],
+        resource_type: 'auto' // Important for PDFs to be treated correctly
     }
 });
 
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 200 * 1024 * 1024 }, // 200MB limit
-    fileFilter: function (req, file, cb) {
-        const filetypes = /jpeg|jpg|png|gif|webp|mp4|webm|ogg|pdf/;
-        const mimetype = filetypes.test(file.mimetype);
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+const upload = multer({ storage: storage });
 
-        if (mimetype && extname) {
-            return cb(null, true);
-        }
-        cb(new Error('Only image, video, and PDF files are allowed!'));
-    }
-});
-
-// Upload image endpoint
+// Upload endpoint
 router.post('/upload', upload.single('image'), (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ message: 'No file uploaded' });
         }
 
-        // Return relative path so frontend can prepend correct API URL
-        const imageUrl = `/uploads/${req.file.filename}`;
-        res.json({ imageUrl });
+        // Cloudinary returns the URL in req.file.path
+        res.json({ imageUrl: req.file.path });
     } catch (err) {
+        console.error('Upload Error:', err);
         res.status(500).json({ message: 'Upload failed', error: err.message });
     }
 });
