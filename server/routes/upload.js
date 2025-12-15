@@ -17,10 +17,15 @@ cloudinary.config({
 // Configure Storage
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: {
-        folder: 'bharat-swaraj-uploads',
-        allowed_formats: ['jpg', 'png', 'jpeg', 'pdf', 'webp'],
-        resource_type: 'auto' // Important for PDFs to be treated correctly
+    params: async (req, file) => {
+        // Determine resource type based on mimetype
+        const isPdf = file.mimetype === 'application/pdf';
+        return {
+            folder: 'bharat-swaraj-uploads',
+            resource_type: isPdf ? 'raw' : 'auto', // Use 'raw' for PDFs to prevent corruption
+            public_id: file.originalname.split('.')[0] + '-' + Date.now(), // Keep original name
+            format: isPdf ? 'pdf' : undefined, // Explicitly set format for PDFs
+        };
     }
 });
 
