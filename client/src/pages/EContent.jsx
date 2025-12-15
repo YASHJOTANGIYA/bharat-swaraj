@@ -7,10 +7,7 @@ import './EContent.css';
 import './econtent-delete.css';
 
 // Configure PDF worker
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url,
-).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const EContent = () => {
     const { city } = useParams();
