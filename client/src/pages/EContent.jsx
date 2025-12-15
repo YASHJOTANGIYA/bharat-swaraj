@@ -2,12 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FileText, Plus, X, Upload, Calendar, Share2, Trash2 } from 'lucide-react';
 import API_URL from '../config/api';
-import { Document, Page, pdfjs } from 'react-pdf';
 import './EContent.css';
 import './econtent-delete.css';
-
-// Configure PDF worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const EContent = () => {
     const { city } = useParams();
@@ -44,8 +40,14 @@ const EContent = () => {
     };
 
     const handleFileChange = (e) => {
-        if (e.target.files[0]) {
-            setFile(e.target.files[0]);
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            if (selectedFile.size > 10 * 1024 * 1024) { // 10MB limit
+                alert('File is too large. Maximum size is 10MB for the free tier.');
+                e.target.value = ''; // Reset input
+                return;
+            }
+            setFile(selectedFile);
         }
     };
 
@@ -114,6 +116,21 @@ const EContent = () => {
         return url;
     };
 
+    const getThumbnailUrl = (pdfUrl) => {
+        if (!pdfUrl) return '';
+        // If it's a Cloudinary URL, we can generate a thumbnail
+        if (pdfUrl.includes('cloudinary.com')) {
+            // Insert transformation before 'v<version>' or before the filename if no version
+            // Transformation: pg_1 (page 1), f_jpg (format jpg)
+            const parts = pdfUrl.split('/upload/');
+            if (parts.length === 2) {
+                return `${parts[0]}/upload/pg_1,f_jpg/${parts[1]}`;
+            }
+        }
+        // Fallback for non-Cloudinary URLs (show generic PDF icon)
+        return null;
+    };
+
     const handleOpenPdf = (url) => {
         const fullUrl = getFullPdfUrl(url);
         window.open(fullUrl, '_blank');
@@ -161,72 +178,62 @@ const EContent = () => {
             ) : (
                 <div className="econtent-grid">
                     {eContents.length > 0 ? (
-                        eContents.map((item) => (
-                            <div key={item._id} className="econtent-card">
-                                <div className="econtent-thumbnail" onClick={() => handleOpenPdf(item.pdfUrl)}>
-                                    <Document
-                                        file={getFullPdfUrl(item.pdfUrl)}
-                                        loading={<div className="pdf-loading">Loading Preview...</div>}
-                                        error={
-                                            <div className="pdf-error">
-                                                <p>Preview Unavailable</p>
-                                                <button
-                                                    className="view-pdf-btn"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleOpenPdf(item.pdfUrl);
-                                                    }}
-                                                >
-                                                    View PDF
-                                                </button>
+                        eContents.map((item) => {
+                            const thumbnailUrl = getThumbnailUrl(item.pdfUrl);
+                            return (
+                                <div key={item._id} className="econtent-card">
+                                    <div className="econtent-thumbnail" onClick={() => handleOpenPdf(item.pdfUrl)}>
+                                        {thumbnailUrl ? (
+                                            <img
+                                                src={thumbnailUrl}
+                                                alt={item.title}
+                                                className="pdf-thumbnail-img"
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none'; // Hide if thumbnail fails
+                                                    e.target.nextSibling.style.display = 'flex'; // Show fallback
+                                                }}
+                                            />
+                                        ) : null}
+
+                                        {/* Fallback / Overlay */}
+                                        <div className={`pdf-icon-overlay ${thumbnailUrl ? 'has-thumbnail' : ''}`}>
+                                            <FileText size={48} />
+                                        </div>
+
+                                        <div className="econtent-preview-placeholder">
+                                            <span>Click to Read</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="econtent-info">
+                                        <h3 className="econtent-title">{item.title}</h3>
+                                        <div className="econtent-meta">
+                                            <div className="econtent-date">
+                                                <Calendar size={14} />
+                                                {new Date(item.date).toLocaleDateString()}
                                             </div>
-                                        }
-                                        onLoadError={(error) => console.error('PDF Load Error:', error)}
-                                        className="pdf-document"
-                                    >
-                                        <Page
-                                            pageNumber={1}
-                                            width={280}
-                                            renderTextLayer={false}
-                                            renderAnnotationLayer={false}
-                                            className="pdf-page"
-                                        />
-                                    </Document>
-                                    <div className="pdf-icon-overlay">
-                                        <FileText size={48} />
-                                    </div>
-                                    <div className="econtent-preview-placeholder">
-                                        <span>Click to Read</span>
-                                    </div>
-                                </div>
-                                <div className="econtent-info">
-                                    <h3 className="econtent-title">{item.title}</h3>
-                                    <div className="econtent-meta">
-                                        <div className="econtent-date">
-                                            <Calendar size={14} />
-                                            {new Date(item.date).toLocaleDateString()}
-                                        </div>
-                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                            <button className="econtent-share-btn">
-                                                <Share2 size={16} />
-                                            </button>
-                                            {user?.role === 'admin' && (
-                                                <button
-                                                    className="econtent-delete-btn"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleDelete(item._id, item.title);
-                                                    }}
-                                                    title="Delete E-Content"
-                                                >
-                                                    <Trash2 size={16} />
+                                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                <button className="econtent-share-btn">
+                                                    <Share2 size={16} />
                                                 </button>
-                                            )}
+                                                {user?.role === 'admin' && (
+                                                    <button
+                                                        className="econtent-delete-btn"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDelete(item._id, item.title);
+                                                        }}
+                                                        title="Delete E-Content"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))
+                            );
+                        })
                     ) : (
                         <div className="no-content">
                             <p>No e-papers available for {city} yet.</p>

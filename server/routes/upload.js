@@ -22,11 +22,9 @@ const storage = new CloudinaryStorage({
         const isPdf = file.mimetype === 'application/pdf';
         return {
             folder: 'bharat-swaraj-uploads',
-            resource_type: isPdf ? 'raw' : 'auto',
-            // For raw files, we MUST manually include the extension in the public_id
-            // otherwise Cloudinary serves it without one, and browsers/viewers get confused.
-            public_id: file.originalname.split('.')[0] + '-' + Date.now() + (isPdf ? '.pdf' : ''),
-            format: isPdf ? undefined : 'auto', // Don't set format for raw files
+            resource_type: 'auto', // Use auto so Cloudinary treats PDF as image-like for transformations
+            public_id: file.originalname.split('.')[0] + '-' + Date.now(),
+            format: isPdf ? 'pdf' : undefined, // Explicitly set format
         };
     }
 });
