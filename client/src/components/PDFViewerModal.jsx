@@ -14,9 +14,55 @@ const PDFViewerModal = ({ url, title, onClose }) => {
     const [pageNumber, setPageNumber] = useState(1);
     const [scale, setScale] = useState(1.0);
     const [loading, setLoading] = useState(true);
+    const [pdfFile, setPdfFile] = useState(null);
+    const [error, setError] = useState(null);
+
+    React.useEffect(() => {
+        let active = true;
+        const loadPdf = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                // Fetch as blob to bypass some CORS issues and ensure stable loading
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to fetch PDF: ${response.statusText}`);
+
+                const blob = await response.blob();
+                const blobUrl = URL.createObjectURL(blob);
+
+                if (active) {
+                    setPdfFile(blobUrl);
+                }
+            } catch (err) {
+                console.error('Error preparing PDF:', err);
+                if (active) {
+                    setError(err.message);
+                    setLoading(false);
+                }
+            }
+        };
+
+        if (url) {
+            loadPdf();
+        }
+
+        return () => {
+            active = false;
+            if (pdfFile && pdfFile.startsWith('blob:')) {
+                URL.revokeObjectURL(pdfFile);
+            }
+        };
+    }, [url]);
 
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages);
+        setLoading(false);
+    }
+
+    function onDocumentLoadError(err) {
+        console.error('PDF Load Error:', err);
+        setError('Failed to load PDF document. It might be corrupted or restricted.');
         setLoading(false);
     }
 
@@ -60,25 +106,35 @@ const PDFViewerModal = ({ url, title, onClose }) => {
                 </div>
 
                 <div className="pdf-modal-content">
-                    {loading && <div className="pdf-loading">Loading PDF...</div>}
+                    {loading && !error && <div className="pdf-loading">Loading PDF...</div>}
+                    {error && (
+                        <div className="pdf-error">
+                            <p>{error}</p>
+                            <button onClick={handleDownload} className="nav-btn">
+                                Download to View
+                            </button>
+                        </div>
+                    )}
 
-                    <Document
-                        file={url}
-                        onLoadSuccess={onDocumentLoadSuccess}
-                        onLoadError={(error) => console.error('Error loading PDF:', error)}
-                        loading={<div className="pdf-loading">Loading Document...</div>}
-                        className="pdf-document"
-                    >
-                        <Page
-                            pageNumber={pageNumber}
-                            scale={scale}
-                            renderTextLayer={true}
-                            renderAnnotationLayer={true}
-                        />
-                    </Document>
+                    {pdfFile && !error && (
+                        <Document
+                            file={pdfFile}
+                            onLoadSuccess={onDocumentLoadSuccess}
+                            onLoadError={onDocumentLoadError}
+                            loading={<div className="pdf-loading">Rendering...</div>}
+                            className="pdf-document"
+                        >
+                            <Page
+                                pageNumber={pageNumber}
+                                scale={scale}
+                                renderTextLayer={true}
+                                renderAnnotationLayer={true}
+                            />
+                        </Document>
+                    )}
                 </div>
 
-                {numPages && (
+                {numPages && !loading && !error && (
                     <div className="pdf-modal-footer">
                         <button
                             disabled={pageNumber <= 1}
