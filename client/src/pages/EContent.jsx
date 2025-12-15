@@ -113,12 +113,12 @@ const EContent = () => {
             finalUrl = finalUrl.replace('http:', 'https:');
         }
 
-        // Handle Cloudinary URLs: Inject fl_inline to ensure browser display
-        if (finalUrl.includes('cloudinary.com') && finalUrl.includes('/upload/')) {
-            // Check if we already have transformations
-            if (!finalUrl.includes('/fl_inline')) {
-                finalUrl = finalUrl.replace('/upload/', '/upload/fl_inline/');
-            }
+        // Remove any injected transformations if they exist (just in case)
+        if (finalUrl.includes('/fl_inline/')) {
+            finalUrl = finalUrl.replace('/fl_inline/', '/');
+        }
+        if (finalUrl.includes('/fl_attachment/')) {
+            finalUrl = finalUrl.replace('/fl_attachment/', '/');
         }
 
         // Fix legacy localhost URLs
@@ -128,18 +128,6 @@ const EContent = () => {
         // Handle relative paths
         if (!finalUrl.startsWith('http')) {
             return `${API_URL}${finalUrl}`;
-        }
-        return finalUrl;
-    };
-
-    const getDownloadUrl = (url) => {
-        if (!url) return '';
-        let finalUrl = getFullPdfUrl(url);
-        // Replace fl_inline with fl_attachment for download, or insert it
-        if (finalUrl.includes('/fl_inline/')) {
-            return finalUrl.replace('/fl_inline/', '/fl_attachment/');
-        } else if (finalUrl.includes('/upload/')) {
-            return finalUrl.replace('/upload/', '/upload/fl_attachment/');
         }
         return finalUrl;
     };
@@ -164,16 +152,30 @@ const EContent = () => {
         window.open(fullUrl, '_blank');
     };
 
-    const handleDownload = (e, url, title) => {
+    const handleDownload = async (e, url, title) => {
         e.stopPropagation();
-        const downloadUrl = getDownloadUrl(url);
-        // Create a temporary link to trigger download
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = title || 'document.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const fullUrl = getFullPdfUrl(url);
+
+        try {
+            // Fetch the file as a blob to bypass Cloudinary transformation restrictions
+            const response = await fetch(fullUrl);
+            if (!response.ok) throw new Error('Download failed');
+
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = title ? `${title}.pdf` : 'document.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error('Download error:', error);
+            // Fallback: just open in new tab
+            window.open(fullUrl, '_blank');
+        }
     };
 
     const handleDelete = async (id, title) => {
