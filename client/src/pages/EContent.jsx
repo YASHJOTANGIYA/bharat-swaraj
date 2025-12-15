@@ -89,10 +89,13 @@ const EContent = () => {
                 setTitle('');
                 setFile(null);
                 fetchEContents();
+            } else {
+                const errorData = await eContentRes.json();
+                throw new Error(errorData.message || 'Failed to create e-content record');
             }
         } catch (error) {
             console.error('Error adding e-content:', error);
-            alert('Failed to add e-content');
+            alert(`Failed to add e-content: ${error.message}`);
         } finally {
             setUploading(false);
         }
@@ -165,6 +168,7 @@ const EContent = () => {
                                         file={getFullPdfUrl(item.pdfUrl)}
                                         loading={<div className="pdf-loading">Loading Preview...</div>}
                                         error={<div className="pdf-error">Preview Unavailable</div>}
+                                        onLoadError={(error) => console.error('PDF Load Error:', error)}
                                         className="pdf-document"
                                     >
                                         <Page
