@@ -79,7 +79,12 @@ const PDFViewerModal = ({ url, title, onClose }) => {
     }
 
     function handleDownload() {
-        window.open(url, '_blank');
+        let downloadUrl = url;
+        // Add fl_attachment to Cloudinary URLs to force download
+        if (downloadUrl.includes('cloudinary.com') && !downloadUrl.includes('fl_attachment')) {
+            downloadUrl = downloadUrl.replace('/upload/', '/upload/fl_attachment/');
+        }
+        window.open(downloadUrl, '_self'); // _self to trigger download in same tab (or _blank if preferred, but _self is often better for attachments)
     }
 
     return (
