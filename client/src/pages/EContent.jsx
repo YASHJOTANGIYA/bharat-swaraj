@@ -99,213 +99,185 @@ const EContent = () => {
             console.error('Error adding e-content:', error);
             alert(`Failed to add e-content: ${error.message}`);
         } finally {
-            setUploading(false);
-        }
-    };
-
-    const getFullPdfUrl = (url) => {
-        if (!url) return '';
-
-        // Handle Cloudinary URLs
-        if (url.includes('cloudinary.com')) {
-            // Cloudinary "auto" uploads for PDFs are often stored as "image" resource type but with .pdf extension.
-            // A 401 error usually means we are trying to access it with the wrong resource type in the URL
-            // or incorrect transformation parameters.
-
-            // 1. Ensure we don't have double /upload/
-            let cleanUrl = url.replace(/\/upload\/.*?\//, '/upload/');
-
-            // 2. If the URL contains '/raw/upload/', change it to '/image/upload/' because we used resource_type: 'auto'
-            // which defaults to 'image' for PDFs in many Cloudinary configurations.
-            // However, if we forced 'raw' in previous attempts, it might be 'raw'.
-            // Let's try to keep it as is but ensure no transformations.
-
-            return cleanUrl;
-        }
-
-        // Fix legacy localhost URLs
-        if (url.includes('localhost:5000')) {
-            return url.replace('http://localhost:5000', API_URL);
-        }
-        // Handle relative paths
-        if (!url.startsWith('http')) {
-            return `${API_URL}${url}`;
-        }
-        return url;
-    };
-
-    const getThumbnailUrl = (pdfUrl) => {
-        if (!pdfUrl) return '';
-        // If it's a Cloudinary URL, we can generate a thumbnail
-        if (pdfUrl.includes('cloudinary.com')) {
-            // Insert transformation before 'v<version>' or before the filename if no version
-            // Transformation: pg_1 (page 1), f_jpg (format jpg)
-            const parts = pdfUrl.split('/upload/');
-            if (parts.length === 2) {
-                return `${parts[0]}/upload/pg_1,f_jpg/${parts[1]}`;
+            // Handle relative paths
+            if (!url.startsWith('http')) {
+                return `${API_URL}${url}`;
             }
-        }
-        // Fallback for non-Cloudinary URLs (show generic PDF icon)
-        return null;
-    };
+            return url;
+        };
 
-    const handleOpenPdf = (url) => {
-        const fullUrl = getFullPdfUrl(url);
-        window.open(fullUrl, '_blank');
-    };
+        const getThumbnailUrl = (pdfUrl) => {
+            if (!pdfUrl) return '';
+            // If it's a Cloudinary URL, we can generate a thumbnail
+            if (pdfUrl.includes('cloudinary.com')) {
+                // Insert transformation before 'v<version>' or before the filename if no version
+                // Transformation: pg_1 (page 1), f_jpg (format jpg)
+                const parts = pdfUrl.split('/upload/');
+                if (parts.length === 2) {
+                    return `${parts[0]}/upload/pg_1,f_jpg/${parts[1]}`;
+                }
+            }
+            // Fallback for non-Cloudinary URLs (show generic PDF icon)
+            return null;
+        };
 
-    const handleDelete = async (id, title) => {
-        if (!window.confirm(`Are you sure you want to delete "${title}"?`)) {
-            return;
-        }
+        const handleOpenPdf = (url) => {
+            const fullUrl = getFullPdfUrl(url);
+            window.open(fullUrl, '_blank');
+        };
 
-        try {
-            const response = await fetch(`${API_URL}/api/econtent/${id}`, {
-                method: 'DELETE'
-            });
+        const handleDelete = async (id, title) => {
+            if (!window.confirm(`Are you sure you want to delete "${title}"?`)) {
+                return;
+            }
 
-            if (response.ok) {
-                alert('E-Content deleted successfully');
-                fetchEContents(); // Refresh the list
-            } else {
+            try {
+                const response = await fetch(`${API_URL}/api/econtent/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('E-Content deleted successfully');
+                    fetchEContents(); // Refresh the list
+                } else {
+                    alert('Failed to delete e-content');
+                }
+            } catch (error) {
+                console.error('Error deleting e-content:', error);
                 alert('Failed to delete e-content');
             }
-        } catch (error) {
-            console.error('Error deleting e-content:', error);
-            alert('Failed to delete e-content');
-        }
-    };
+        };
 
-    return (
-        <div className="econtent-page">
-            <div className="econtent-header">
-                <div>
-                    <h1 className="econtent-city-title">{city.charAt(0).toUpperCase() + city.slice(1)} E-Papers</h1>
-                    <p className="econtent-subtitle">Read the latest editions from {city}</p>
-                </div>
-                {user?.role === 'admin' && (
-                    <button className="add-econtent-btn" onClick={() => setShowAddModal(true)}>
-                        <Plus size={20} />
-                        Add E-Content
-                    </button>
-                )}
-            </div>
-
-            {loading ? (
-                <div className="loading-spinner">Loading...</div>
-            ) : (
-                <div className="econtent-grid">
-                    {eContents.length > 0 ? (
-                        eContents.map((item) => {
-                            const thumbnailUrl = getThumbnailUrl(item.pdfUrl);
-                            return (
-                                <div key={item._id} className="econtent-card">
-                                    <div className="econtent-thumbnail" onClick={() => handleOpenPdf(item.pdfUrl)}>
-                                        {thumbnailUrl ? (
-                                            <img
-                                                src={thumbnailUrl}
-                                                alt={item.title}
-                                                className="pdf-thumbnail-img"
-                                                onError={(e) => {
-                                                    e.target.style.display = 'none'; // Hide if thumbnail fails
-                                                    e.target.nextSibling.style.display = 'flex'; // Show fallback
-                                                }}
-                                            />
-                                        ) : null}
-
-                                        {/* Fallback / Overlay */}
-                                        <div className={`pdf-icon-overlay ${thumbnailUrl ? 'has-thumbnail' : ''}`}>
-                                            <FileText size={48} />
-                                        </div>
-
-                                        <div className="econtent-preview-placeholder">
-                                            <span>Click to Read</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="econtent-info">
-                                        <h3 className="econtent-title">{item.title}</h3>
-                                        <div className="econtent-meta">
-                                            <div className="econtent-date">
-                                                <Calendar size={14} />
-                                                {new Date(item.date).toLocaleDateString()}
-                                            </div>
-                                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                                <button className="econtent-share-btn">
-                                                    <Share2 size={16} />
-                                                </button>
-                                                {user?.role === 'admin' && (
-                                                    <button
-                                                        className="econtent-delete-btn"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleDelete(item._id, item.title);
-                                                        }}
-                                                        title="Delete E-Content"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })
-                    ) : (
-                        <div className="no-content">
-                            <p>No e-papers available for {city} yet.</p>
-                        </div>
+        return (
+            <div className="econtent-page">
+                <div className="econtent-header">
+                    <div>
+                        <h1 className="econtent-city-title">{city.charAt(0).toUpperCase() + city.slice(1)} E-Papers</h1>
+                        <p className="econtent-subtitle">Read the latest editions from {city}</p>
+                    </div>
+                    {user?.role === 'admin' && (
+                        <button className="add-econtent-btn" onClick={() => setShowAddModal(true)}>
+                            <Plus size={20} />
+                            Add E-Content
+                        </button>
                     )}
                 </div>
-            )}
 
-            {/* Add E-Content Modal */}
-            {showAddModal && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h3>Add New E-Content</h3>
-                            <button className="close-btn" onClick={() => setShowAddModal(false)}>
-                                <X size={24} />
-                            </button>
-                        </div>
-                        <form onSubmit={handleSubmit} className="add-econtent-form">
-                            <div className="form-group">
-                                <label>Title / Edition Name</label>
-                                <input
-                                    type="text"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="e.g. Morning Edition"
-                                    required
-                                />
+                {loading ? (
+                    <div className="loading-spinner">Loading...</div>
+                ) : (
+                    <div className="econtent-grid">
+                        {eContents.length > 0 ? (
+                            eContents.map((item) => {
+                                const thumbnailUrl = getThumbnailUrl(item.pdfUrl);
+                                return (
+                                    <div key={item._id} className="econtent-card">
+                                        <div className="econtent-thumbnail" onClick={() => handleOpenPdf(item.pdfUrl)}>
+                                            {thumbnailUrl ? (
+                                                <img
+                                                    src={thumbnailUrl}
+                                                    alt={item.title}
+                                                    className="pdf-thumbnail-img"
+                                                    onError={(e) => {
+                                                        e.target.style.display = 'none'; // Hide if thumbnail fails
+                                                        e.target.nextSibling.style.display = 'flex'; // Show fallback
+                                                    }}
+                                                />
+                                            ) : null}
+
+                                            {/* Fallback / Overlay */}
+                                            <div className={`pdf-icon-overlay ${thumbnailUrl ? 'has-thumbnail' : ''}`}>
+                                                <FileText size={48} />
+                                            </div>
+
+                                            <div className="econtent-preview-placeholder">
+                                                <span>Click to Read</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="econtent-info">
+                                            <h3 className="econtent-title">{item.title}</h3>
+                                            <div className="econtent-meta">
+                                                <div className="econtent-date">
+                                                    <Calendar size={14} />
+                                                    {new Date(item.date).toLocaleDateString()}
+                                                </div>
+                                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                    <button className="econtent-share-btn">
+                                                        <Share2 size={16} />
+                                                    </button>
+                                                    {user?.role === 'admin' && (
+                                                        <button
+                                                            className="econtent-delete-btn"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleDelete(item._id, item.title);
+                                                            }}
+                                                            title="Delete E-Content"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <div className="no-content">
+                                <p>No e-papers available for {city} yet.</p>
                             </div>
-                            <div className="form-group">
-                                <label>Upload PDF</label>
-                                <div className="file-upload-wrapper">
+                        )}
+                    </div>
+                )}
+
+                {/* Add E-Content Modal */}
+                {showAddModal && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h3>Add New E-Content</h3>
+                                <button className="close-btn" onClick={() => setShowAddModal(false)}>
+                                    <X size={24} />
+                                </button>
+                            </div>
+                            <form onSubmit={handleSubmit} className="add-econtent-form">
+                                <div className="form-group">
+                                    <label>Title / Edition Name</label>
                                     <input
-                                        type="file"
-                                        accept=".pdf"
-                                        onChange={handleFileChange}
-                                        id="pdf-upload"
+                                        type="text"
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        placeholder="e.g. Morning Edition"
                                         required
                                     />
-                                    <label htmlFor="pdf-upload" className="file-upload-label">
-                                        <Upload size={20} />
-                                        {file ? file.name : "Choose PDF file"}
-                                    </label>
                                 </div>
-                            </div>
-                            <button type="submit" className="submit-btn" disabled={uploading}>
-                                {uploading ? 'Uploading...' : 'Add E-Content'}
-                            </button>
-                        </form>
+                                <div className="form-group">
+                                    <label>Upload PDF</label>
+                                    <div className="file-upload-wrapper">
+                                        <input
+                                            type="file"
+                                            accept=".pdf"
+                                            onChange={handleFileChange}
+                                            id="pdf-upload"
+                                            required
+                                        />
+                                        <label htmlFor="pdf-upload" className="file-upload-label">
+                                            <Upload size={20} />
+                                            {file ? file.name : "Choose PDF file"}
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" className="submit-btn" disabled={uploading}>
+                                    {uploading ? 'Uploading...' : 'Add E-Content'}
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
-    );
-};
+                )}
+            </div>
+        );
+    };
 
-export default EContent;
+    export default EContent;
