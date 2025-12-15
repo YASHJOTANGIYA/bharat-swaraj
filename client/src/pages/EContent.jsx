@@ -4,6 +4,7 @@ import { FileText, Plus, X, Upload, Calendar, Share2, Trash2 } from 'lucide-reac
 import API_URL from '../config/api';
 import './EContent.css';
 import './econtent-delete.css';
+import PDFViewerModal from '../components/PDFViewerModal';
 
 const EContent = () => {
     const { city } = useParams();
@@ -16,6 +17,10 @@ const EContent = () => {
     const [title, setTitle] = useState('');
     const [file, setFile] = useState(null);
     const [uploading, setUploading] = useState(false);
+
+    // PDF Viewer State
+    const [selectedPdf, setSelectedPdf] = useState(null);
+    const [pdfTitle, setPdfTitle] = useState('');
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -147,11 +152,10 @@ const EContent = () => {
         return null;
     };
 
-    const handleOpenPdf = (url) => {
+    const handleOpenPdf = (url, title) => {
         const fullUrl = getFullPdfUrl(url);
-        // Use Google Docs Viewer for better compatibility and to avoid browser PDF viewer errors
-        const googleDocsUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
-        window.open(googleDocsUrl, '_blank');
+        setSelectedPdf(fullUrl);
+        setPdfTitle(title);
     };
 
     const handleDownload = async (e, url, title) => {
@@ -230,7 +234,7 @@ const EContent = () => {
                             const thumbnailUrl = getThumbnailUrl(item.pdfUrl);
                             return (
                                 <div key={item._id} className="econtent-card">
-                                    <div className="econtent-thumbnail" onClick={() => handleOpenPdf(item.pdfUrl)}>
+                                    <div className="econtent-thumbnail" onClick={() => handleOpenPdf(item.pdfUrl, item.title)}>
                                         {thumbnailUrl ? (
                                             <img
                                                 src={thumbnailUrl}
@@ -340,6 +344,15 @@ const EContent = () => {
                         </form>
                     </div>
                 </div>
+            )}
+
+            {/* PDF Viewer Modal */}
+            {selectedPdf && (
+                <PDFViewerModal
+                    url={selectedPdf}
+                    title={pdfTitle}
+                    onClose={() => setSelectedPdf(null)}
+                />
             )}
         </div>
     );
