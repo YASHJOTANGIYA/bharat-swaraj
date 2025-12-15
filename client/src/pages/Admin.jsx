@@ -31,8 +31,8 @@ const Admin = () => {
 
     const fetchNews = async () => {
         try {
-            const res = await axios.get(`${API_URL}/api/news`);
-            setNewsList(res.data);
+            const res = await axios.get(`${API_URL}/api/news?limit=100`);
+            setNewsList(res.data.news);
         } catch (err) {
             console.error('Error fetching news:', err);
         }

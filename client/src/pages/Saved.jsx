@@ -22,9 +22,8 @@ const Saved = () => {
                 return;
             }
 
-            const res = await axios.get(`${API_URL}/api/news`);
-            const filtered = res.data.filter(news => savedIds.includes(news._id));
-            setSavedNews(filtered);
+            const res = await axios.get(`${API_URL}/api/news?ids=${savedIds.join(',')}`);
+            setSavedNews(res.data.news);
         } catch (err) {
             console.error('Error fetching saved news:', err);
         } finally {

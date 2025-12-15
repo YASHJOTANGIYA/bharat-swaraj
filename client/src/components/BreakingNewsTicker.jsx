@@ -21,7 +21,7 @@ const BreakingNewsTicker = () => {
             if (response.ok) {
                 const data = await response.json();
                 // Get the 5 most recent news items
-                setBreakingNews(data.slice(0, 5));
+                setBreakingNews(data.news.slice(0, 5));
             }
         } catch (error) {
             console.error('Error fetching breaking news:', error);

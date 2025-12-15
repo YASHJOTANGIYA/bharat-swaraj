@@ -278,7 +278,7 @@ const Navbar = ({ toggleSidebar }) => {
                             <h2>Welcome to Bharat Swaraj e-paper.</h2>
                             <p>Access to e-papers from 40 cities of Gujarat and Mumbai</p>
                             <div className="login-landing-image-placeholder">
-                                <Newspaper size={64} color="#4b5563" />
+                                <Newspaper size={48} />
                             </div>
                             <button className="login-action-btn" onClick={handleLoginToRead}>
                                 Login to read

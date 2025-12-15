@@ -43,13 +43,17 @@ if (!mongoURI) {
 mongoose.connect(mongoURI)
     .then(() => {
         console.log('MongoDB Connected');
-        // Start YouTube auto-sync scheduler after DB connection
-        scheduleYouTubeSync();
 
-        // Run Shorts migration 10 seconds after startup
-        setTimeout(() => {
-            updateShortsStatus();
-        }, 10000);
+        // Only run background schedulers if NOT in Vercel (Serverless)
+        if (!process.env.VERCEL) {
+            // Start YouTube auto-sync scheduler after DB connection
+            scheduleYouTubeSync();
+
+            // Run Shorts migration 10 seconds after startup
+            setTimeout(() => {
+                updateShortsStatus();
+            }, 10000);
+        }
     })
     .catch(err => console.error('MongoDB Connection Error:', err));
 
@@ -68,6 +72,12 @@ app.get('/', (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+if (process.env.VERCEL) {
+    // Vercel Serverless Environment
+    module.exports = app;
+} else {
+    // Local or Render (Persistent Server) Environment
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}

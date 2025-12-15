@@ -16,22 +16,8 @@ const SearchResults = () => {
     const searchNews = React.useCallback(async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`${API_URL}/api/news`);
-            console.log('Total news items:', res.data.length);
-            console.log('Search query:', query);
-
-            const filtered = res.data.filter(news => {
-                const searchLower = query.toLowerCase().trim();
-                const titleMatch = (news.title?.toLowerCase() || '').includes(searchLower);
-                const contentMatch = (news.content?.toLowerCase() || '').includes(searchLower);
-                const summaryMatch = (news.summary?.toLowerCase() || '').includes(searchLower);
-                const categoryMatch = (news.category?.toLowerCase() || '').includes(searchLower);
-
-                return titleMatch || contentMatch || summaryMatch || categoryMatch;
-            });
-
-            console.log('Filtered results:', filtered.length);
-            setResults(filtered);
+            const res = await axios.get(`${API_URL}/api/news?search=${encodeURIComponent(query)}`);
+            setResults(res.data.news);
         } catch (err) {
             console.error('Error searching news:', err);
             setResults([]);

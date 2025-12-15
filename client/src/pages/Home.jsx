@@ -19,22 +19,38 @@ const Home = () => {
     usePageTitle('Home');
     const [newsItems, setNewsItems] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const [activeTab, setActiveTab] = useState('stories'); // 'stories' or 'shorts'
 
-    useEffect(() => {
-        const fetchNews = async () => {
-            try {
-                const res = await axios.get(`${API_URL}/api/news?isShort=false`); // Only fetch regular news for main feed
-                setNewsItems(res.data);
-            } catch (err) {
-                console.error('Error fetching news:', err);
-                setNewsItems([]);
-            } finally {
-                setLoading(false);
+    const fetchNews = async (pageNum = 1, isLoadMore = false) => {
+        try {
+            if (!isLoadMore) setLoading(true);
+            const res = await axios.get(`${API_URL}/api/news?isShort=false&page=${pageNum}&limit=12`);
+
+            if (isLoadMore) {
+                setNewsItems(prev => [...prev, ...res.data.news]);
+            } else {
+                setNewsItems(res.data.news);
             }
-        };
-        fetchNews();
+            setTotalPages(res.data.totalPages);
+        } catch (err) {
+            console.error('Error fetching news:', err);
+            if (!isLoadMore) setNewsItems([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchNews(1);
     }, []);
+
+    const handleLoadMore = () => {
+        const nextPage = page + 1;
+        setPage(nextPage);
+        fetchNews(nextPage, true);
+    };
 
     return (
         <div className="home-container">
@@ -73,11 +89,36 @@ const Home = () => {
                                     Loading news...
                                 </div>
                             ) : newsItems.length > 0 ? (
-                                <div className="home-news-grid">
-                                    {newsItems.map(item => (
-                                        <NewsCard key={item.id || item._id} news={item} />
-                                    ))}
-                                </div>
+                                <>
+                                    <div className="home-news-grid">
+                                        {newsItems.map(item => (
+                                            <NewsCard key={item.id || item._id} news={item} />
+                                        ))}
+                                    </div>
+                                    {page < totalPages && (
+                                        <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+                                            <button
+                                                onClick={handleLoadMore}
+                                                style={{
+                                                    padding: '0.75rem 2.5rem',
+                                                    backgroundColor: '#2563eb',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    borderRadius: '9999px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '1rem',
+                                                    fontWeight: '600',
+                                                    boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)',
+                                                    transition: 'all 0.2s ease'
+                                                }}
+                                                onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                                                onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                                            >
+                                                Load More Stories
+                                            </button>
+                                        </div>
+                                    )}
+                                </>
                             ) : (
                                 <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
                                     <p style={{ fontSize: '1.125rem', marginBottom: '0.5rem' }}>No news articles yet</p>

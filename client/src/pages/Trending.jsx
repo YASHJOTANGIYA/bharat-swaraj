@@ -14,12 +14,8 @@ const Trending = () => {
 
     const fetchNews = async () => {
         try {
-            const res = await axios.get(`${API_URL}/api/news`);
-            // Sort by views (most viewed first) or by date if views don't exist
-            const sorted = res.data.sort((a, b) => {
-                return (b.views || 0) - (a.views || 0) || new Date(b.createdAt) - new Date(a.createdAt);
-            });
-            setNewsItems(sorted.slice(0, 12)); // Show top 12
+            const res = await axios.get(`${API_URL}/api/news?sort=-views&limit=12`);
+            setNewsItems(res.data.news);
         } catch (err) {
             console.error('Error fetching news:', err);
         }

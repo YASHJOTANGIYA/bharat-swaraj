@@ -16,4 +16,9 @@ const newsSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
+// Add indexes for better query performance
+newsSchema.index({ createdAt: -1 });
+newsSchema.index({ category: 1 });
+newsSchema.index({ isShort: 1 });
+
 module.exports = mongoose.model('News', newsSchema);

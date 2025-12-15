@@ -26,20 +26,8 @@ const Category = () => {
     const fetchCategoryNews = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`${API_URL}/api/news`);
-            console.log('All news:', res.data);
-            console.log('Filtering for category:', category);
-
-            // Filter by category (case-insensitive)
-            const filtered = res.data.filter(news => {
-                const newsCategory = (news.category || '').toLowerCase().trim();
-                const filterCategory = category.toLowerCase().trim();
-                console.log(`Comparing: "${newsCategory}" === "${filterCategory}"`, newsCategory === filterCategory);
-                return newsCategory === filterCategory;
-            });
-
-            console.log('Filtered results:', filtered);
-            setNewsItems(filtered);
+            const res = await axios.get(`${API_URL}/api/news?category=${category}`);
+            setNewsItems(res.data.news);
         } catch (err) {
             console.error('Error fetching news:', err);
             setNewsItems([]);

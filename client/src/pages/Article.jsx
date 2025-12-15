@@ -48,7 +48,7 @@ const Article = () => {
                     exclude: currentId
                 }
             });
-            setRelatedNews(res.data);
+            setRelatedNews(res.data.news);
         } catch (err) {
             console.error('Error fetching related news:', err);
         }

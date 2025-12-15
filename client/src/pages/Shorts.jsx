@@ -14,7 +14,7 @@ const Shorts = () => {
         const fetchShorts = async () => {
             try {
                 const res = await axios.get(`${API_URL}/api/news?isShort=true`);
-                setShorts(res.data);
+                setShorts(res.data.news);
             } catch (err) {
                 console.error('Error fetching shorts:', err);
             } finally {
