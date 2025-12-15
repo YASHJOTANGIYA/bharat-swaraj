@@ -108,13 +108,19 @@ const EContent = () => {
 
         // Handle Cloudinary URLs
         if (url.includes('cloudinary.com')) {
-            // If it's a PDF, ensure we are not applying image transformations to the main link
-            // and that it's being served correctly.
-            // Often Cloudinary URLs for PDFs might need to be 'raw' or 'image/upload' depending on how it was uploaded.
-            // But since we uploaded as 'auto' (which became 'image' type for PDF), we should ensure no format conversion happens.
+            // Cloudinary "auto" uploads for PDFs are often stored as "image" resource type but with .pdf extension.
+            // A 401 error usually means we are trying to access it with the wrong resource type in the URL
+            // or incorrect transformation parameters.
 
-            // Remove any transformation parameters (e.g., /upload/c_scale,w_500/) to get the original file
-            return url.replace(/\/upload\/.*?\//, '/upload/');
+            // 1. Ensure we don't have double /upload/
+            let cleanUrl = url.replace(/\/upload\/.*?\//, '/upload/');
+
+            // 2. If the URL contains '/raw/upload/', change it to '/image/upload/' because we used resource_type: 'auto'
+            // which defaults to 'image' for PDFs in many Cloudinary configurations.
+            // However, if we forced 'raw' in previous attempts, it might be 'raw'.
+            // Let's try to keep it as is but ensure no transformations.
+
+            return cleanUrl;
         }
 
         // Fix legacy localhost URLs
