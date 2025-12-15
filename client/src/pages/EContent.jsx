@@ -105,6 +105,18 @@ const EContent = () => {
 
     const getFullPdfUrl = (url) => {
         if (!url) return '';
+
+        // Handle Cloudinary URLs
+        if (url.includes('cloudinary.com')) {
+            // If it's a PDF, ensure we are not applying image transformations to the main link
+            // and that it's being served correctly.
+            // Often Cloudinary URLs for PDFs might need to be 'raw' or 'image/upload' depending on how it was uploaded.
+            // But since we uploaded as 'auto' (which became 'image' type for PDF), we should ensure no format conversion happens.
+
+            // Remove any transformation parameters (e.g., /upload/c_scale,w_500/) to get the original file
+            return url.replace(/\/upload\/.*?\//, '/upload/');
+        }
+
         // Fix legacy localhost URLs
         if (url.includes('localhost:5000')) {
             return url.replace('http://localhost:5000', API_URL);
