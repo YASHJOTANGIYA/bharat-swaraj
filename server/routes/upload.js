@@ -22,9 +22,11 @@ const storage = new CloudinaryStorage({
         const isPdf = file.mimetype === 'application/pdf';
         return {
             folder: 'bharat-swaraj-uploads',
-            resource_type: isPdf ? 'raw' : 'auto', // Use 'raw' for PDFs to prevent corruption
-            public_id: file.originalname.split('.')[0] + '-' + Date.now(), // Keep original name
-            format: isPdf ? 'pdf' : undefined, // Explicitly set format for PDFs
+            resource_type: isPdf ? 'raw' : 'auto',
+            // For raw files, we MUST manually include the extension in the public_id
+            // otherwise Cloudinary serves it without one, and browsers/viewers get confused.
+            public_id: file.originalname.split('.')[0] + '-' + Date.now() + (isPdf ? '.pdf' : ''),
+            format: isPdf ? undefined : 'auto', // Don't set format for raw files
         };
     }
 });
