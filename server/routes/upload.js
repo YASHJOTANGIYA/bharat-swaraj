@@ -24,7 +24,7 @@ const storage = new CloudinaryStorage({
             folder: 'bharat-swaraj-uploads',
             resource_type: 'auto', // Use auto so Cloudinary treats PDF as image-like for transformations
             public_id: file.originalname.split('.')[0] + '-' + Date.now(),
-            format: isPdf ? 'pdf' : undefined, // Explicitly set format
+            // format: isPdf ? 'pdf' : undefined, // Let Cloudinary handle the format
         };
     }
 });

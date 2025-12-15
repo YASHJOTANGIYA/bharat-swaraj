@@ -149,7 +149,9 @@ const EContent = () => {
 
     const handleOpenPdf = (url) => {
         const fullUrl = getFullPdfUrl(url);
-        window.open(fullUrl, '_blank');
+        // Use Google Docs Viewer for better compatibility and to avoid browser PDF viewer errors
+        const googleDocsUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
+        window.open(googleDocsUrl, '_blank');
     };
 
     const handleDownload = async (e, url, title) => {
@@ -173,8 +175,12 @@ const EContent = () => {
             window.URL.revokeObjectURL(blobUrl);
         } catch (error) {
             console.error('Download error:', error);
-            // Fallback: just open in new tab
-            window.open(fullUrl, '_blank');
+            // Fallback: just open in new tab with attachment flag to force download
+            let downloadUrl = fullUrl;
+            if (downloadUrl.includes('/upload/') && !downloadUrl.includes('/fl_attachment/')) {
+                downloadUrl = downloadUrl.replace('/upload/', '/upload/fl_attachment/');
+            }
+            window.open(downloadUrl, '_blank');
         }
     };
 
