@@ -151,6 +151,21 @@ router.post('/sync-youtube', async (req, res) => {
         });
 
     } catch (error) {
+        // Handle Quota Exceeded specifically
+        if (error.response?.status === 403 && (
+            error.response?.data?.error?.errors?.[0]?.reason === 'quotaExceeded' ||
+            error.response?.data?.error?.message?.includes('quota')
+        )) {
+            console.warn('⚠️ YouTube API Quota Exceeded. Skipping sync for now.');
+            return res.json({
+                success: true, // Return true so scheduler considers it "done"
+                message: 'YouTube API Quota Exceeded. Sync skipped.',
+                imported: 0,
+                skipped: 0,
+                categoryCounts: {}
+            });
+        }
+
         console.error('YouTube sync error:', error.response?.data || error.message);
         res.status(500).json({
             message: 'Failed to sync YouTube videos',
