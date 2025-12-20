@@ -33,6 +33,40 @@
 }
 }
 
+.navbar-menu-btn:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.navbar-logo:hover {
+    transform: scale(1.02);
+}
+
+.navbar-logo-image {
+    height: 60px !important;
+    width: auto !important;
+    object-fit: contain !important;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.06));
+}
+
+@media (max-width: 768px) {
+    .navbar-search-container {
+        display: none;
+    }
+}
+
+.navbar-search-wrapper {
+    position: relative;
+}
+
 .navbar-search-input {
     width: 100%;
     border-radius: 12px;
