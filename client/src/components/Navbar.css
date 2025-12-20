@@ -47,20 +47,6 @@
 
 .navbar-logo:hover {
     transform: scale(1.02);
-}
-
-.navbar-logo-image {
-    height: 110px !important;
-    width: auto !important;
-    object-fit: contain !important;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.06));
-    transform: scale(1.6);
-    transform-origin: left center;
-}
-
-.navbar-search-container {
-    flex: 1;
-    max-width: 500px;
     margin: 0 auto;
     padding: 0 2rem;
 }
