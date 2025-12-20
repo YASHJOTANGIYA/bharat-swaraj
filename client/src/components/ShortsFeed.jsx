@@ -5,16 +5,33 @@ import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import './ShortsFeed.css';
 
 const ShortsFeed = () => {
-    const [shorts, setShorts] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [shorts, setShorts] = useState(() => {
+        const saved = localStorage.getItem('homeShorts');
+        return saved ? JSON.parse(saved) : [];
+    });
+    const [loading, setLoading] = useState(() => {
+        return !localStorage.getItem('homeShorts');
+    });
     const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+    const [isLongLoading, setIsLongLoading] = useState(false);
     const containerRef = useRef(null);
+
+    useEffect(() => {
+        let timer;
+        if (loading) {
+            timer = setTimeout(() => setIsLongLoading(true), 3000);
+        } else {
+            setIsLongLoading(false);
+        }
+        return () => clearTimeout(timer);
+    }, [loading]);
 
     useEffect(() => {
         const fetchShorts = async () => {
             try {
                 const res = await axios.get(`${API_URL}/api/news?isShort=true`);
                 setShorts(res.data.news);
+                localStorage.setItem('homeShorts', JSON.stringify(res.data.news));
             } catch (err) {
                 console.error('Error fetching shorts:', err);
             } finally {
@@ -37,7 +54,16 @@ const ShortsFeed = () => {
         }
     };
 
-    if (loading) return <div className="shorts-feed-loading">Loading Shorts...</div>;
+    if (loading) return (
+        <div className="shorts-feed-loading">
+            <p>Loading Shorts...</p>
+            {isLongLoading && (
+                <p style={{ fontSize: '0.875rem', marginTop: '1rem', color: '#f59e0b' }}>
+                    Server is waking up...
+                </p>
+            )}
+        </div>
+    );
     if (shorts.length === 0) return <div className="shorts-feed-empty">No Shorts available</div>;
 
     return (

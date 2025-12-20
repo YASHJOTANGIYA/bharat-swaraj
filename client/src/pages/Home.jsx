@@ -17,11 +17,27 @@ import ShortsFeed from '../components/ShortsFeed';
 
 const Home = () => {
     usePageTitle('Home');
-    const [newsItems, setNewsItems] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [newsItems, setNewsItems] = useState(() => {
+        const saved = localStorage.getItem('homeNews');
+        return saved ? JSON.parse(saved) : [];
+    });
+    const [loading, setLoading] = useState(() => {
+        return !localStorage.getItem('homeNews');
+    });
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [activeTab, setActiveTab] = useState('stories'); // 'stories' or 'shorts'
+    const [isLongLoading, setIsLongLoading] = useState(false);
+
+    useEffect(() => {
+        let timer;
+        if (loading) {
+            timer = setTimeout(() => setIsLongLoading(true), 3000);
+        } else {
+            setIsLongLoading(false);
+        }
+        return () => clearTimeout(timer);
+    }, [loading]);
 
     const fetchNews = async (pageNum = 1, isLoadMore = false) => {
         try {
@@ -32,6 +48,10 @@ const Home = () => {
                 setNewsItems(prev => [...prev, ...res.data.news]);
             } else {
                 setNewsItems(res.data.news);
+                // Cache the first page of news
+                if (pageNum === 1) {
+                    localStorage.setItem('homeNews', JSON.stringify(res.data.news));
+                }
             }
             setTotalPages(res.data.totalPages);
         } catch (err) {
@@ -86,7 +106,12 @@ const Home = () => {
                         <>
                             {loading ? (
                                 <div style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
-                                    Loading news...
+                                    <p>Loading news...</p>
+                                    {isLongLoading && (
+                                        <p style={{ fontSize: '0.875rem', marginTop: '1rem', color: '#f59e0b' }}>
+                                            Server is waking up, this may take up to a minute...
+                                        </p>
+                                    )}
                                 </div>
                             ) : newsItems.length > 0 ? (
                                 <>

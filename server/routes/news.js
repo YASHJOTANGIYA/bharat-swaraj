@@ -72,7 +72,7 @@ router.get('/', async (req, res) => {
             sortOption = { [sortField]: sortOrder };
         }
 
-        let newsQuery = News.find(query).sort(sortOption);
+        let newsQuery = News.find(query).select('-content').lean().sort(sortOption);
 
         // Pagination
         const page = parseInt(req.query.page) || 1;
