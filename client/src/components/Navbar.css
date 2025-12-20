@@ -31,7 +31,7 @@
     border-radius: 8px;
     transition: all 0.2s;
 }
-}
+
 
 .navbar-menu-btn:hover {
     background-color: #f1f5f9;
@@ -51,7 +51,7 @@
 }
 
 .navbar-logo-image {
-    height: 60px !important;
+    height: 90px !important;
     width: auto !important;
     object-fit: contain !important;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.06));
@@ -456,13 +456,14 @@
     }
 }
 
-content: '';
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-height: 6px;
-background: linear-gradient(90deg, #2563eb, #7c3aed);
+.login-modal-landing::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #2563eb, #7c3aed);
 }
 
 .login-landing-content h2 {
