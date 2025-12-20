@@ -450,29 +450,13 @@
     }
 }
 
-/* Login Modal */
-.login-modal-landing {
-    background: #ffffff;
-    border-radius: 24px;
-    padding: 3rem 2.5rem;
-    width: 90%;
-    max-width: 480px;
-    text-align: center;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    position: relative;
-    overflow: hidden;
-    animation: slideUp 0.3s ease;
-}
-
-/* Decorative top gradient bar */
-.login-modal-landing::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: linear-gradient(90deg, #2563eb, #7c3aed);
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+height: 6px;
+background: linear-gradient(90deg, #2563eb, #7c3aed);
 }
 
 .login-landing-content h2 {
