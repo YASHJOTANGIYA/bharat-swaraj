@@ -54,6 +54,8 @@
     width: auto !important;
     object-fit: contain !important;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.06));
+    transform: scale(1.6);
+    transform-origin: left center;
 }
 
 .navbar-search-container {
