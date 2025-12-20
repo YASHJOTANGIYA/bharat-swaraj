@@ -31,34 +31,6 @@
     border-radius: 8px;
     transition: all 0.2s;
 }
-
-.navbar-menu-btn:hover {
-    background-color: #f1f5f9;
-    color: #0f172a;
-}
-
-.navbar-logo {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    text-decoration: none;
-    transition: transform 0.2s ease;
-}
-
-.navbar-logo:hover {
-    transform: scale(1.02);
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
-@media (max-width: 768px) {
-    .navbar-search-container {
-        display: none;
-    }
-}
-
-.navbar-search-wrapper {
-    position: relative;
 }
 
 .navbar-search-input {
