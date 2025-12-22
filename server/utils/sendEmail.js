@@ -10,9 +10,11 @@ const sendEmail = async (options) => {
     });
 
     // Create a transporter
-    // Using 'service: gmail' automatically sets host to smtp.gmail.com and port to 465/587 correctly
+    // Use explicit SSL configuration for better reliability on cloud hosts
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, // true for 465, false for other ports
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
