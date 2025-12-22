@@ -10,17 +10,19 @@ const sendEmail = async (options) => {
     });
 
     // Create a transporter
-    // Switch to Port 587 (STARTTLS) which is often more reliable for timeouts
+    // Use 'gmail' service with forced IPv4 to prevent timeouts on some cloud providers
     const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false, // true for 465, false for other ports
+        service: 'gmail',
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
         },
-        connectionTimeout: 10000, // 10 seconds
-        greetingTimeout: 10000
+        // Force IPv4 as IPv6 can cause timeouts on some networks
+        family: 4,
+        // Increase timeouts significantly
+        connectionTimeout: 30000,
+        greetingTimeout: 30000,
+        socketTimeout: 30000
     });
 
     // Verify connection configuration
