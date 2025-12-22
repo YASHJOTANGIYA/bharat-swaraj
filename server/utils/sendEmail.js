@@ -10,10 +10,9 @@ const sendEmail = async (options) => {
     });
 
     // Create a transporter
+    // Using 'service: gmail' automatically sets host to smtp.gmail.com and port to 465/587 correctly
     const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT,
-        secure: process.env.EMAIL_PORT == 465, // true for 465, false for other ports
+        service: 'gmail',
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
