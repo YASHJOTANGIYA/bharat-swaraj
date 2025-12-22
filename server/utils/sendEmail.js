@@ -10,15 +10,17 @@ const sendEmail = async (options) => {
     });
 
     // Create a transporter
-    // Use explicit SSL configuration for better reliability on cloud hosts
+    // Switch to Port 587 (STARTTLS) which is often more reliable for timeouts
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
-        port: 465,
-        secure: true, // true for 465, false for other ports
+        port: 587,
+        secure: false, // true for 465, false for other ports
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
-        }
+        },
+        connectionTimeout: 10000, // 10 seconds
+        greetingTimeout: 10000
     });
 
     // Verify connection configuration
