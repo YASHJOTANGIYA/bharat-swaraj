@@ -14,6 +14,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 
 import SEO from '../components/SEO';
 import ShortsFeed from '../components/ShortsFeed';
+import SkeletonNewsCard from '../components/SkeletonNewsCard';
 
 const Home = () => {
     usePageTitle('Home');
@@ -27,17 +28,6 @@ const Home = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [activeTab, setActiveTab] = useState('stories'); // 'stories' or 'shorts'
-    const [isLongLoading, setIsLongLoading] = useState(false);
-
-    useEffect(() => {
-        let timer;
-        if (loading) {
-            timer = setTimeout(() => setIsLongLoading(true), 3000);
-        } else {
-            setIsLongLoading(false);
-        }
-        return () => clearTimeout(timer);
-    }, [loading]);
 
     const fetchNews = async (pageNum = 1, isLoadMore = false) => {
         try {
@@ -105,13 +95,10 @@ const Home = () => {
                     {activeTab === 'stories' ? (
                         <>
                             {loading ? (
-                                <div style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
-                                    <p>Loading news...</p>
-                                    {isLongLoading && (
-                                        <p style={{ fontSize: '0.875rem', marginTop: '1rem', color: '#f59e0b' }}>
-                                            Server is waking up, this may take up to a minute...
-                                        </p>
-                                    )}
+                                <div className="home-news-grid">
+                                    {[...Array(6)].map((_, index) => (
+                                        <SkeletonNewsCard key={index} />
+                                    ))}
                                 </div>
                             ) : newsItems.length > 0 ? (
                                 <>

@@ -13,18 +13,7 @@ const ShortsFeed = () => {
         return !localStorage.getItem('homeShorts');
     });
     const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-    const [isLongLoading, setIsLongLoading] = useState(false);
     const containerRef = useRef(null);
-
-    useEffect(() => {
-        let timer;
-        if (loading) {
-            timer = setTimeout(() => setIsLongLoading(true), 3000);
-        } else {
-            setIsLongLoading(false);
-        }
-        return () => clearTimeout(timer);
-    }, [loading]);
 
     useEffect(() => {
         const fetchShorts = async () => {
@@ -55,13 +44,8 @@ const ShortsFeed = () => {
     };
 
     if (loading) return (
-        <div className="shorts-feed-loading">
-            <p>Loading Shorts...</p>
-            {isLongLoading && (
-                <p style={{ fontSize: '0.875rem', marginTop: '1rem', color: '#f59e0b' }}>
-                    Server is waking up...
-                </p>
-            )}
+        <div className="shorts-feed-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#000' }}>
+            <div style={{ width: '100%', maxWidth: '500px', aspectRatio: '9/16', background: '#1a1a1a', borderRadius: '12px', animation: 'pulse 1.5s infinite' }}></div>
         </div>
     );
     if (shorts.length === 0) return <div className="shorts-feed-empty">No Shorts available</div>;
