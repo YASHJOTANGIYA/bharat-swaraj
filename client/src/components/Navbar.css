@@ -51,10 +51,11 @@
 }
 
 .navbar-logo-image {
-    height: 90px !important;
+    height: 170px !important;
     width: auto !important;
     object-fit: contain !important;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.06));
+    transform: translateY(+12px);
 }
 
 @media (max-width: 768px) {
