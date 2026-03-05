@@ -457,6 +457,19 @@
     }
 }
 
+.login-modal-landing {
+    background: #ffffff;
+    padding: 3rem 2rem;
+    border-radius: 16px;
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    z-index: 1001;
+}
+
 .login-modal-landing::before {
     content: '';
     position: absolute;
