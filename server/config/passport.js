@@ -52,7 +52,7 @@ if (process.env.GOOGLE_CLIENT_ID &&
                     const isAdmin = profile.emails[0].value === 'yashjotangiya0@gmail.com';
                     user = new User({
                         googleId: profile.id,
-                        username: profile.displayName,
+                        username: profile.displayName || profile.emails[0].value.split('@')[0],
                         email: profile.emails[0].value,
                         role: isAdmin ? 'admin' : 'user'
                     });
