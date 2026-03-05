@@ -17,10 +17,23 @@ if (isGoogleConfigured) {
 
     router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-    router.get('/google/callback',
-        passport.authenticate('google', { session: false, failureRedirect: `${clientUrl}/login?error=Authentication failed` }),
-        googleCallback
-    );
+    router.get('/google/callback', (req, res, next) => {
+        passport.authenticate('google', { session: false }, (err, user, info) => {
+            const clientUrl = process.env.CLIENT_URL || ((process.env.NODE_ENV === 'production' || process.env.RENDER)
+                ? 'https://www.bharatswarajweekly.com'
+                : 'http://localhost:5173');
+
+            if (err) {
+                console.error('Google Auth Error:', err);
+                return res.redirect(`${clientUrl}/login?error=${encodeURIComponent('Google Auth Error: ' + err.message)}`);
+            }
+            if (!user) {
+                return res.redirect(`${clientUrl}/login?error=Authentication failed`);
+            }
+            req.user = user;
+            next();
+        })(req, res, next);
+    }, googleCallback);
 } else {
     // Fallback routes when Google OAuth is not configured
     router.get('/google', (req, res) => {

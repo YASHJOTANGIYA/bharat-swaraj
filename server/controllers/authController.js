@@ -70,9 +70,9 @@ exports.googleCallback = async (req, res) => {
 
         // Determine client URL based on environment
         // Force HTTPS for production/Render
-        const clientUrl = (process.env.NODE_ENV === 'production' || process.env.RENDER)
-            ? 'https://bharat-swaraj.vercel.app'
-            : (process.env.CLIENT_URL || 'http://localhost:5173');
+        const clientUrl = process.env.CLIENT_URL || ((process.env.NODE_ENV === 'production' || process.env.RENDER)
+            ? 'https://www.bharatswarajweekly.com'
+            : 'http://localhost:5173');
 
         // Create token
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -92,9 +92,9 @@ exports.googleCallback = async (req, res) => {
             console.error('Email send error:', emailError);
         }
     } catch (err) {
-        const clientUrl = (process.env.NODE_ENV === 'production' || process.env.RENDER)
-            ? 'https://bharat-swaraj.vercel.app'
-            : (process.env.CLIENT_URL || 'http://localhost:5173');
+        const clientUrl = process.env.CLIENT_URL || ((process.env.NODE_ENV === 'production' || process.env.RENDER)
+            ? 'https://www.bharatswarajweekly.com'
+            : 'http://localhost:5173');
         res.redirect(`${clientUrl}/login?error=Authentication failed`);
     }
 };
