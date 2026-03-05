@@ -32,6 +32,42 @@
   <meta property="twitter:image" content="https://bharat-swaraj.vercel.app/logo.png" />
 
   <title>Bharat Swaraj - Latest News & Updates</title>
+
+  <!-- Structured Data for SEO (helps with Google Sitelinks & Knowledge Panel) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://bharatswarajweekly.com/#website",
+          "url": "https://bharatswarajweekly.com/",
+          "name": "Bharat Swaraj",
+          "description": "India's trusted news source. Get the latest breaking news, politics, sports, entertainment, and business updates in Gujarati and English.",
+          "inLanguage": ["gu", "en"],
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://bharatswarajweekly.com/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://bharatswarajweekly.com/#organization",
+          "name": "Bharat Swaraj Weekly",
+          "url": "https://bharatswarajweekly.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://bharatswarajweekly.com/logo.png"
+          },
+          "sameAs": [
+            "https://www.facebook.com/profile.php?id=...", 
+            "https://www.youtube.com/@BharatSwarajWeekly"
+          ]
+        }
+      ]
+    }
+  </script>
 </head>
 
 <body>
