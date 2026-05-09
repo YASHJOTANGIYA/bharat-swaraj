@@ -4,14 +4,12 @@
     left: 0;
     bottom: 0;
     width: 280px;
-    background: var(--bg-secondary);
-    border-right: 1px solid var(--border);
+    background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);
+    border-right: 1px solid #cbd5e1;
     z-index: 40;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
-    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
 }
 
 .sidebar-closed {
@@ -40,7 +38,7 @@
     align-items: center;
     gap: 1.25rem;
     padding: 1rem 1.25rem;
-    color: var(--text-primary);
+    color: #1e293b;
     text-decoration: none;
     border-radius: 12px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -161,8 +159,4 @@
     .sidebar-closed {
         transform: translateX(0);
     }
-}
-
-transform: translateX(0);
-}
 }

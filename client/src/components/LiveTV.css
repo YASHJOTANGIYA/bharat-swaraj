@@ -127,7 +127,3 @@
 .streaming-text svg {
     color: #ef4444;
 }
-
-streaming-text svg {
-    color: var(--danger);
-}
