@@ -15,6 +15,8 @@ const Article = () => {
     const [isSaved, setIsSaved] = useState(false);
     const [showShareMenu, setShowShareMenu] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [aiSummaryState, setAiSummaryState] = useState(null); // 'loading' or 'done'
+    const [aiSummaryText, setAiSummaryText] = useState('');
 
     const [relatedNews, setRelatedNews] = useState([]);
 
@@ -176,65 +178,116 @@ const Article = () => {
                         </div>
                     </div>
 
-                    {/* Action Buttons */}
-                    <div className="article-actions">
-                        <button className="article-action-btn" onClick={handleShare}>
-                            <Share2 size={18} />
-                            Share
-                        </button>
-                        <button
-                            className={`article-action-btn ${isSaved ? 'saved' : ''}`}
-                            onClick={handleSave}
-                        >
-                            <Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} />
-                            {isSaved ? 'Saved' : 'Save'}
-                        </button>
-                    </div>
+                {/* Action Buttons */}
+                <div className="article-actions">
+                    <button className="article-action-btn" onClick={handleShare}>
+                        <Share2 size={18} />
+                        Share
+                    </button>
+                    <button
+                        className={`article-action-btn ${isSaved ? 'saved' : ''}`}
+                        onClick={handleSave}
+                    >
+                        <Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} />
+                        {isSaved ? 'Saved' : 'Save'}
+                    </button>
+                    <button 
+                        className="article-action-btn ai-summary-btn" 
+                        onClick={() => {
+                            if (!window.aiSummaryGenerated) {
+                                window.aiSummaryGenerated = true;
+                                const content = article.content || '';
+                                const sentences = content.split('.').filter(s => s.trim().length > 10).slice(0, 3);
+                                const generatedSummary = article.summary || sentences.join('. ') + '.';
+                                
+                                setAiSummaryState('loading');
+                                setTimeout(() => {
+                                    setAiSummaryState('done');
+                                    setAiSummaryText(generatedSummary);
+                                }, 1500);
+                            }
+                        }}
+                        style={{ background: 'linear-gradient(45deg, #8b5cf6, #ec4899)', color: 'white', border: 'none' }}
+                    >
+                        ✨ AI Summary
+                    </button>
                 </div>
-
-                {/* Featured Image - Only show if not a YouTube video */}
-                {article.image && !article.youtubeVideoId && (
-                    <div className="article-image-container">
-                        <img src={article.image} alt={article.title} className="article-image" />
+                
+                {/* AI Summary Display Box */}
+                {aiSummaryState && (
+                    <div className="ai-summary-box" style={{ 
+                        marginTop: '1.5rem', 
+                        padding: '1.5rem', 
+                        borderRadius: '1rem', 
+                        background: 'rgba(139, 92, 246, 0.1)', 
+                        border: '1px solid rgba(139, 92, 246, 0.3)',
+                        position: 'relative',
+                        overflow: 'hidden'
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: '#a78bfa', fontWeight: 'bold' }}>
+                            ✨ AI Generated Summary
+                        </div>
+                        {aiSummaryState === 'loading' ? (
+                            <div className="ai-typing-indicator" style={{ display: 'flex', gap: '4px' }}>
+                                <div className="dot" style={{ width: '8px', height: '8px', background: '#a78bfa', borderRadius: '50%', animation: 'bounce 1.4s infinite ease-in-out both' }}></div>
+                                <div className="dot" style={{ width: '8px', height: '8px', background: '#a78bfa', borderRadius: '50%', animation: 'bounce 1.4s infinite ease-in-out both', animationDelay: '0.2s' }}></div>
+                                <div className="dot" style={{ width: '8px', height: '8px', background: '#a78bfa', borderRadius: '50%', animation: 'bounce 1.4s infinite ease-in-out both', animationDelay: '0.4s' }}></div>
+                            </div>
+                        ) : (
+                            <p style={{ color: 'var(--text-primary)', lineHeight: '1.6', fontSize: '1.05rem', margin: 0 }}>
+                                {aiSummaryText}
+                            </p>
+                        )}
+                        <style>{`
+                            @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+                        `}</style>
                     </div>
                 )}
+            </div>
 
-                {/* Featured Video */}
-                {article.video && (
-                    <div className="article-video-container" style={{ marginTop: '2rem', borderRadius: '1rem', overflow: 'hidden' }}>
-                        <video
-                            src={article.video}
-                            controls
-                            style={{ width: '100%', display: 'block' }}
-                            poster={article.image}
-                        >
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                )}
-
-                {/* YouTube Video Embed */}
-                {article.youtubeVideoId && (
-                    <div className="article-youtube-container" style={{ marginTop: '2rem', borderRadius: '1rem', overflow: 'hidden', position: 'relative', paddingBottom: '56.25%', height: 0 }}>
-                        <iframe
-                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                            src={`https://www.youtube.com/embed/${article.youtubeVideoId}`}
-                            title={article.title}
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowFullScreen
-                        ></iframe>
-                    </div>
-                )}
-
-                {/* Article Content */}
-                <div className="article-content">
-                    <div className="article-text">
-                        {article.content.split('\n').map((paragraph, index) => (
-                            paragraph.trim() && <p key={index}>{paragraph}</p>
-                        ))}
-                    </div>
+            {/* Featured Image - Only show if not a YouTube video */}
+            {article.image && !article.youtubeVideoId && (
+                <div className="article-image-container">
+                    <img src={article.image} alt={article.title} className="article-image" />
                 </div>
+            )}
+
+            {/* Featured Video */}
+            {article.video && (
+                <div className="article-video-container" style={{ marginTop: '2rem', borderRadius: '1rem', overflow: 'hidden' }}>
+                    <video
+                        src={article.video}
+                        controls
+                        style={{ width: '100%', display: 'block' }}
+                        poster={article.image}
+                    >
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            )}
+
+            {/* YouTube Video Embed */}
+            {article.youtubeVideoId && (
+                <div className="article-youtube-container" style={{ marginTop: '2rem', borderRadius: '1rem', overflow: 'hidden', position: 'relative', paddingBottom: '56.25%', height: 0 }}>
+                    <iframe
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                        src={`https://www.youtube.com/embed/${article.youtubeVideoId}`}
+                        title={article.title}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                    ></iframe>
+                </div>
+            )}
+
+            {/* Article Content */}
+            <div className="article-content">
+                <div className="article-text">
+                    {article.content.split('\n').map((paragraph, index) => (
+                        paragraph.trim() && <p key={index}>{paragraph}</p>
+                    ))}
+                </div>
+            </div>
             </div>
 
             {/* Related News Section */}
