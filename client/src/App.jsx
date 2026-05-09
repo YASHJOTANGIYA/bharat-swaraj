@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { aboutContent, contactContent, privacyContent, termsContent, cookieContent } from './data/staticContent';
 
 // Lazy loading components for Performance Optimization (Code Splitting)
@@ -32,6 +33,7 @@ function App() {
   return (
     <Router>
       <Analytics />
+      <SpeedInsights />
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" style={{ zIndex: 99999 }} />
       <Layout>
         <Suspense fallback={<PageLoader />}>
