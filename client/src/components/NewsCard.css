@@ -1,22 +1,24 @@
 .news-card {
     display: flex;
     flex-direction: row;
-    background: #ffffff;
+    background: var(--bg-card);
     border-radius: 1rem;
     overflow: hidden;
     padding: 1rem;
     gap: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     height: auto;
     min-height: 130px;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+    box-shadow: var(--shadow-sm);
     position: relative;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .news-card:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
-    border-color: #cbd5e1;
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent);
     transform: translateY(-2px);
 }
 
@@ -37,20 +39,20 @@
     font-size: 1.0625rem;
     font-weight: 700;
     line-height: 1.4;
-    color: #0f172a;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
     transition: color 0.2s ease;
     letter-spacing: -0.015em;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-heading);
 }
 
 .news-card:hover .news-card-title {
-    color: #2563eb;
+    color: var(--accent);
 }
 
 .news-card-summary {
     font-size: 0.875rem;
-    color: #64748b;
+    color: var(--text-secondary);
     line-height: 1.5;
     display: none;
     font-weight: 400;
@@ -73,7 +75,7 @@
     justify-content: space-between;
     margin-top: auto;
     padding-top: 0.75rem;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid var(--border-light);
 }
 
 .news-card-category {
@@ -81,12 +83,12 @@
     align-items: center;
     gap: 0.25rem;
     padding: 0.25rem 0.75rem;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
     border-radius: 9999px;
     font-size: 0.7rem;
     font-weight: 700;
-    color: #475569;
+    color: var(--text-tertiary);
     cursor: pointer;
     transition: all 0.2s ease;
     text-transform: uppercase;
@@ -94,11 +96,11 @@
 }
 
 .news-card-category:hover {
-    background: #2563eb;
+    background: var(--accent);
     color: #ffffff;
-    border-color: #2563eb;
+    border-color: var(--accent);
     transform: translateY(-1px);
-    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 4px 6px -1px var(--accent-light);
 }
 
 .category-arrow {
