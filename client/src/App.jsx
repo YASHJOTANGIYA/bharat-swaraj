@@ -29,11 +29,35 @@ const PageLoader = () => (
   </div>
 );
 
+// Handles Google OAuth token passed via root URL (?google_token=...)
+// This avoids SPA routing issues on Vercel for /auth/google/callback
+function GoogleTokenHandler() {
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('google_token');
+    const userStr = params.get('google_user');
+    if (token && userStr) {
+      try {
+        const user = JSON.parse(decodeURIComponent(userStr));
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        window.dispatchEvent(new Event('storage'));
+        // Clean the URL so token doesn't stay in address bar
+        window.history.replaceState({}, document.title, '/');
+      } catch (err) {
+        console.error('Google token parse error:', err);
+      }
+    }
+  }, []);
+  return null;
+}
+
 function App() {
   return (
     <Router>
       <Analytics />
       <SpeedInsights />
+      <GoogleTokenHandler />
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" style={{ zIndex: 99999 }} />
       <Layout>
         <Suspense fallback={<PageLoader />}>

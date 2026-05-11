@@ -77,8 +77,8 @@ exports.googleCallback = async (req, res) => {
         // Create token
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        // Redirect to frontend with token
-        res.redirect(`${clientUrl}/auth/google/callback?token=${token}&user=${encodeURIComponent(JSON.stringify({ id: user._id, username: user.username, email: user.email, role: user.role }))}`);
+        // Redirect to frontend with token (use root URL to avoid SPA routing issues on Vercel)
+        res.redirect(`${clientUrl}/?google_token=${token}&google_user=${encodeURIComponent(JSON.stringify({ id: user._id, username: user.username, email: user.email, role: user.role }))}`);
 
         // Send login notification email
         try {
