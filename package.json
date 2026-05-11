@@ -1,7 +1,0 @@
-{
-  "name": "bharat-swaraj",
-  "private": true,
-  "scripts": {
-    "build": "cd client && npm install && npm run build && mv dist ../dist"
-  }
-}
