@@ -38,6 +38,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Image Reset for CLS Prevention */
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
