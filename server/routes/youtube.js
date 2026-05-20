@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const News = require('../models/News');
 const Notification = require('../models/Notification');
+const { GoogleGenAI } = require('@google/genai');
 
 // YouTube API Configuration
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
@@ -109,10 +110,31 @@ router.post('/sync-youtube', async (req, res) => {
                     return totalSeconds <= 60;
                 };
 
+                let articleContent = snippet.description || 'Watch the full video for details.';
+
+                // AI Generation logic for full videos
+                if (process.env.GEMINI_API_KEY && !isShort(duration)) {
+                    try {
+                        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+                        const prompt = `Write a 300-word news article in Gujarati language based on this YouTube video title: "${snippet.title}" and description: "${snippet.description}". Make it sound like a professional news report. Do not include introductory/outro sentences like 'Here is the article', just return the news article itself. Use proper HTML tags like <p>, <h2> for formatting.`;
+                        
+                        const response = await ai.models.generateContent({
+                            model: 'gemini-2.5-flash',
+                            contents: prompt
+                        });
+                        
+                        if (response.text) {
+                            articleContent = response.text;
+                        }
+                    } catch (aiError) {
+                        console.error('AI Generation error:', aiError.message);
+                    }
+                }
+
                 // Create news article
                 const newsArticle = new News({
                     title: snippet.title,
-                    content: snippet.description || 'Watch the full video for details.',
+                    content: articleContent,
                     category: detectedCategory,
                     image: snippet.thumbnails.maxres?.url || snippet.thumbnails.high?.url || snippet.thumbnails.medium.url,
                     youtubeVideoId: videoId,

@@ -197,6 +197,11 @@ const Navbar = ({ toggleSidebar }) => {
 
                 {/* Right Section */}
                 <div className="navbar-right">
+                    <Link to="/category/Editorial" className="navbar-econtent-btn" style={{ backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--primary-color)', color: 'var(--primary-color)' }}>
+                        <Newspaper size={18} />
+                        <span>Editorial Articles</span>
+                    </Link>
+
                     <button onClick={handleEContentClick} className="navbar-econtent-btn">
                         <Newspaper size={18} />
                         <span>E-Content</span>

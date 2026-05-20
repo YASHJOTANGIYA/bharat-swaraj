@@ -275,6 +275,7 @@ const Admin = () => {
                                         >
                                             <option>General</option>
                                             <option>India</option>
+                                            <option>Editorial</option>
                                             <option>World</option>
                                             <option>Politics</option>
                                             <option>Technology</option>
