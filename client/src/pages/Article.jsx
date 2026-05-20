@@ -245,12 +245,14 @@ const Article = () => {
                 )}
             </div>
 
-            {/* Featured Image - Only show if not a YouTube video */}
-            {article.image && !article.youtubeVideoId && (
-                <div className="article-image-container">
-                    <img src={article.image} alt={article.title} className="article-image" />
-                </div>
-            )}
+            {/* Featured Image (Always show an image at the top) */}
+            <div className="article-image-container">
+                <img 
+                    src={article.image || (article.youtubeVideoId ? `https://img.youtube.com/vi/${article.youtubeVideoId}/maxresdefault.jpg` : '/placeholder-news.jpg')} 
+                    alt={article.title} 
+                    className="article-image" 
+                />
+            </div>
 
             {/* Featured Video */}
             {article.video && (
@@ -266,20 +268,6 @@ const Article = () => {
                 </div>
             )}
 
-            {/* YouTube Video Embed */}
-            {article.youtubeVideoId && (
-                <div className="article-youtube-container" style={{ marginTop: '2rem', borderRadius: '1rem', overflow: 'hidden', position: 'relative', paddingBottom: '56.25%', height: 0 }}>
-                    <iframe
-                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                        src={`https://www.youtube.com/embed/${article.youtubeVideoId}`}
-                        title={article.title}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                    ></iframe>
-                </div>
-            )}
-
             {/* Article Content */}
             <div className="article-content">
                 <div className="article-text">
@@ -287,6 +275,22 @@ const Article = () => {
                         paragraph.trim() && <p key={index}>{paragraph}</p>
                     ))}
                 </div>
+
+                {/* YouTube Video Embed - Moved to bottom so Google prioritizes text */}
+                {article.youtubeVideoId && (
+                    <div className="article-video-report">
+                        <h3 className="video-report-title">📹 Watch Full Video Report</h3>
+                        <div className="article-youtube-container">
+                            <iframe
+                                src={`https://www.youtube.com/embed/${article.youtubeVideoId}`}
+                                title={article.title}
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    </div>
+                )}
             </div>
             </div>
 
