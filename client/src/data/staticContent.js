@@ -160,6 +160,28 @@ export const privacyContent = `
             </li>
         </ul>
     </section>
+
+    <section style="background-color: #f9fafb; padding: 2rem; border-radius: 0.75rem; border: 1px solid #e5e7eb; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+        <h3 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin-bottom: 1.25rem; display: flex; align-items: center;">
+            <svg style="width: 24px; height: 24px; min-width: 24px; margin-right: 0.75rem; color: #3b82f6;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" /></svg>
+            4. Advertising & Google AdSense
+        </h3>
+        <p style="font-size: 1.125rem; line-height: 1.625; margin-bottom: 1rem;">We use Google AdSense to serve ads on our website. Google's advertising requirements can be summed up by Google's Advertising Principles. They are put in place to provide a positive experience for users.</p>
+        <ul style="list-style-type: none; padding-left: 0;">
+            <li style="margin-bottom: 0.75rem; position: relative; padding-left: 1.5rem;">
+                <span style="position: absolute; left: 0; color: #3b82f6; font-size: 1.5rem; line-height: 1.2rem;">•</span>
+                Third party vendors, including Google, use cookies to serve ads based on a user's prior visits to our website or other websites.
+            </li>
+            <li style="margin-bottom: 0.75rem; position: relative; padding-left: 1.5rem;">
+                <span style="position: absolute; left: 0; color: #3b82f6; font-size: 1.5rem; line-height: 1.2rem;">•</span>
+                Google's use of advertising cookies enables it and its partners to serve ads to our users based on their visit to our sites and/or other sites on the Internet.
+            </li>
+            <li style="margin-bottom: 0.75rem; position: relative; padding-left: 1.5rem;">
+                <span style="position: absolute; left: 0; color: #3b82f6; font-size: 1.5rem; line-height: 1.2rem;">•</span>
+                Users may opt-out of personalized advertising by visiting <a href="https://myadcenter.google.com/" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: underline;">Ads Settings</a>.
+            </li>
+        </ul>
+    </section>
 </div>
 `;
 
