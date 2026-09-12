@@ -67,14 +67,32 @@ router.post('/notifications', async (req, res) => {
 
 const axios = require('axios');
 
+// In-memory cache for Gold & Silver rates (30 minutes)
+let cachedGoldRate = {
+    gold24k: 76500,
+    gold22k: 70150,
+    silver1kg: 92000,
+    currency: 'INR',
+    timestamp: new Date()
+};
+let lastGoldRateFetch = 0;
+const GOLD_RATE_CACHE_MS = 30 * 60 * 1000; // 30 minutes
+
 // Get Live Gold Rate
 router.get('/gold-rate', async (req, res) => {
+    const now = Date.now();
+    // Return cached rate if fresh
+    if (cachedGoldRate && (now - lastGoldRateFetch < GOLD_RATE_CACHE_MS)) {
+        return res.json({ ...cachedGoldRate, cached: true });
+    }
+
     try {
         // Fetch from a public data source (GoldPrice.org)
         const response = await axios.get('https://data-asg.goldprice.org/dbXRates/INR', {
             headers: {
                 'User-Agent': 'Mozilla/5.0'
-            }
+            },
+            timeout: 5000 // 5s timeout to prevent hanging
         });
 
         if (response.data && response.data.items && response.data.items.length > 0) {
@@ -86,23 +104,25 @@ router.get('/gold-rate', async (req, res) => {
             const gold10g = (goldOunce / 31.1034768) * 10;
             const silver1kg = (silverOunce / 31.1034768) * 1000;
 
-            res.json({
+            cachedGoldRate = {
                 gold24k: gold10g,
                 gold22k: gold10g * 0.916, // 22K is 91.6% purity
                 silver1kg: silver1kg,
                 currency: 'INR',
                 timestamp: new Date()
-            });
+            };
+            lastGoldRateFetch = now;
+
+            return res.json(cachedGoldRate);
         } else {
             throw new Error('Invalid data format');
         }
     } catch (err) {
         console.error('Gold Rate Fetch Error:', err.message);
-        // Fallback to static data if API fails
-        res.json({
-            gold24k: 76500,
-            gold22k: 70150,
-            silver1kg: 92000,
+        // Return existing cached data if available
+        lastGoldRateFetch = now; // prevent hammering external API on repeated failures
+        return res.json({
+            ...cachedGoldRate,
             isFallback: true
         });
     }

@@ -99,8 +99,8 @@ const Navbar = ({ toggleSidebar }) => {
 
     React.useEffect(() => {
         fetchNotifications();
-        // Poll for notifications every 3 seconds
-        const interval = setInterval(fetchNotifications, 3000);
+        // Poll for notifications every 3 minutes instead of every 3 seconds to preserve server performance
+        const interval = setInterval(fetchNotifications, 180000);
         return () => clearInterval(interval);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

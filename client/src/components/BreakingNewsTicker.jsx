@@ -5,13 +5,20 @@ import API_URL from '../config/api';
 import './BreakingNewsTicker.css';
 
 const BreakingNewsTicker = () => {
-    const [breakingNews, setBreakingNews] = useState([]);
+    const [breakingNews, setBreakingNews] = useState(() => {
+        try {
+            const saved = localStorage.getItem('breakingNews');
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    });
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchBreakingNews();
-        // Refresh breaking news every 2 minutes
-        const interval = setInterval(fetchBreakingNews, 120000);
+        // Refresh breaking news every 3 minutes
+        const interval = setInterval(fetchBreakingNews, 180000);
         return () => clearInterval(interval);
     }, []);
 
@@ -21,7 +28,9 @@ const BreakingNewsTicker = () => {
             if (response.ok) {
                 const data = await response.json();
                 // Get the 5 most recent news items
-                setBreakingNews(data.news.slice(0, 5));
+                const recent = data.news.slice(0, 5);
+                setBreakingNews(recent);
+                localStorage.setItem('breakingNews', JSON.stringify(recent));
             }
         } catch (error) {
             console.error('Error fetching breaking news:', error);

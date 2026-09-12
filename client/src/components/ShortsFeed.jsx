@@ -62,6 +62,7 @@ const ShortsFeed = () => {
                         <iframe
                             src={`https://www.youtube.com/embed/${item.youtubeVideoId}?enablejsapi=1&rel=0&modestbranding=1&loop=1&controls=1`}
                             title={item.title}
+                            loading="lazy"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
                             className="shorts-iframe"

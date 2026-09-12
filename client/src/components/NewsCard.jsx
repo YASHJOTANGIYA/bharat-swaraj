@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Clock, Share2, Bookmark, ArrowRight, X, Copy, Check, PlayCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { optimizeImageUrl } from '../utils/imageOptimizer';
 import './NewsCard.css';
 
 const NewsCard = ({ news }) => {
@@ -91,10 +92,22 @@ const NewsCard = ({ news }) => {
                 </h2>
                 
                 {news.image && !news.youtubeVideoId && (
-                    <img src={news.image} alt={news.title} style={{ width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '0.75rem', marginBottom: '1.5rem' }} />
+                    <img
+                        src={optimizeImageUrl(news.image, 800)}
+                        alt={news.title}
+                        loading="lazy"
+                        decoding="async"
+                        style={{ width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '0.75rem', marginBottom: '1.5rem' }}
+                    />
                 )}
                 {news.youtubeVideoId && (
-                    <img src={`https://img.youtube.com/vi/${news.youtubeVideoId}/maxresdefault.jpg`} alt={news.title} style={{ width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '0.75rem', marginBottom: '1.5rem' }} />
+                    <img
+                        src={`https://img.youtube.com/vi/${news.youtubeVideoId}/maxresdefault.jpg`}
+                        alt={news.title}
+                        loading="lazy"
+                        decoding="async"
+                        style={{ width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '0.75rem', marginBottom: '1.5rem' }}
+                    />
                 )}
 
                 <div style={{ color: 'var(--text-primary)', lineHeight: '1.8', fontSize: '1.1rem', marginBottom: '1.5rem' }}>
@@ -181,8 +194,10 @@ const NewsCard = ({ news }) => {
                 {/* Image Section (Right) */}
                 <div className="news-card-image-container" onClick={news.video ? handlePlayVideo : handleReadClick}>
                     <img
-                        src={news.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'}
+                        src={optimizeImageUrl(news.image, 600) || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'}
                         alt={news.title}
+                        loading="lazy"
+                        decoding="async"
                         className="news-card-image"
                     />
                     {news.video && (

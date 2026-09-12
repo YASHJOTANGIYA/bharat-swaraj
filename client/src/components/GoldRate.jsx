@@ -5,12 +5,23 @@ import API_URL from '../config/api';
 import './GoldRate.css';
 
 const GoldRate = () => {
-    const [rates, setRates] = useState({
-        gold24k: { price: 0, change: 0, isUp: true },
-        gold22k: { price: 0, change: 0, isUp: true },
-        silver: { price: 0, change: 0, isUp: true }
+    const [rates, setRates] = useState(() => {
+        try {
+            const cached = localStorage.getItem('cachedGoldRates');
+            return cached ? JSON.parse(cached) : {
+                gold24k: { price: '76,500', change: 15, isUp: true },
+                gold22k: { price: '70,150', change: 12, isUp: true },
+                silver: { price: '92,000', change: 30, isUp: true }
+            };
+        } catch {
+            return {
+                gold24k: { price: '76,500', change: 15, isUp: true },
+                gold22k: { price: '70,150', change: 12, isUp: true },
+                silver: { price: '92,000', change: 30, isUp: true }
+            };
+        }
     });
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [lastUpdated, setLastUpdated] = useState(new Date());
 
     const fetchRates = async () => {
@@ -24,7 +35,7 @@ const GoldRate = () => {
 
             const formatPrice = (price) => Math.round(price).toLocaleString('en-IN');
 
-            setRates(prev => ({
+            const newRates = {
                 gold24k: {
                     price: formatPrice(data.gold24k),
                     change: Math.floor(Math.random() * 50) + 10,
@@ -40,25 +51,21 @@ const GoldRate = () => {
                     change: Math.floor(Math.random() * 100) + 20,
                     isUp: Math.random() > 0.4
                 }
-            }));
+            };
+            setRates(newRates);
+            localStorage.setItem('cachedGoldRates', JSON.stringify(newRates));
             setLastUpdated(new Date());
             setLoading(false);
         } catch (err) {
             console.error('Error fetching gold rates:', err);
-            if (rates.gold24k.price === 0) {
-                setRates({
-                    gold24k: { price: '76,500', change: 0, isUp: true },
-                    gold22k: { price: '70,150', change: 0, isUp: true },
-                    silver: { price: '92,000', change: 0, isUp: true }
-                });
-            }
             setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchRates();
-        const interval = setInterval(fetchRates, 3000);
+        // Refresh gold rates every 15 minutes (900,000ms) instead of every 3 seconds
+        const interval = setInterval(fetchRates, 900000);
         return () => clearInterval(interval);
     }, []);
 

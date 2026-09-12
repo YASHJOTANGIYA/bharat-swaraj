@@ -5,6 +5,7 @@ import API_URL from '../config/api';
 import { Calendar, User, Share2, Bookmark, ArrowLeft, Tag, X, Copy, Check } from 'lucide-react';
 import Comments from '../components/Comments';
 import SEO from '../components/SEO';
+import { optimizeImageUrl } from '../utils/imageOptimizer';
 import './Article.css';
 
 const Article = () => {
@@ -248,9 +249,10 @@ const Article = () => {
             {/* Featured Image (Always show an image at the top) */}
             <div className="article-image-container">
                 <img 
-                    src={article.image || (article.youtubeVideoId ? `https://img.youtube.com/vi/${article.youtubeVideoId}/maxresdefault.jpg` : '/placeholder-news.jpg')} 
+                    src={optimizeImageUrl(article.image, 1200) || (article.youtubeVideoId ? `https://img.youtube.com/vi/${article.youtubeVideoId}/maxresdefault.jpg` : '/placeholder-news.jpg')} 
                     alt={article.title} 
-                    className="article-image" 
+                    className="article-image"
+                    decoding="async"
                 />
             </div>
 

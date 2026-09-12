@@ -74,6 +74,11 @@ router.get('/', async (req, res) => {
 
         let newsQuery = News.find(query).lean().sort(sortOption);
 
+        // Performance Optimization: Exclude heavy content body on listings unless explicitly needed
+        if (req.query.includeContent !== 'true' && (!category || category.toLowerCase() !== 'editorial')) {
+            newsQuery = newsQuery.select('-content');
+        }
+
         // Pagination
         const page = parseInt(req.query.page) || 1;
         const limitVal = parseInt(req.query.limit) || 20;

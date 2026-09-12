@@ -1,11 +1,9 @@
-import React from 'react';
-import { Youtube, PlayCircle, ExternalLink } from 'lucide-react';
+import React, { useState } from 'react';
+import { Youtube, PlayCircle, Play, ExternalLink } from 'lucide-react';
 import './LiveTV.css';
 
 const LiveTV = () => {
-    // Channel ID: UCvR_Z75x0v3j7G8-k-t2b3Q
-    // Uploads Playlist ID: UUvR_Z75x0v3j7G8-k-t2b3Q (Replace UC with UU)
-    const playlistId = 'UUvR_Z75x0v3j7G8-k-t2b3Q';
+    const [isPlaying, setIsPlaying] = useState(false);
 
     return (
         <div className="live-tv-card">
@@ -34,18 +32,33 @@ const LiveTV = () => {
                 </a>
             </div>
 
-            {/* Video Player (Playlist Embed) */}
+            {/* Video Player (Lite Facade Pattern - Loads iframe only on click) */}
             <div className="video-container">
-                <iframe
-                    width="100%"
-                    height="100%"
-                    src="https://www.youtube.com/embed?listType=playlist&list=UUlhHd2VV7i-aMEXV63La1Lw&autoplay=0"
-                    title="Bharat Swaraj Weekly Videos"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                ></iframe>
+                {isPlaying ? (
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        src="https://www.youtube.com/embed?listType=playlist&list=UUlhHd2VV7i-aMEXV63La1Lw&autoplay=1"
+                        title="Bharat Swaraj Weekly Videos"
+                        frameBorder="0"
+                        loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                    ></iframe>
+                ) : (
+                    <div
+                        className="tv-facade-preview"
+                        onClick={() => setIsPlaying(true)}
+                        title="Click to play latest videos"
+                    >
+                        <div className="tv-facade-overlay"></div>
+                        <button className="tv-facade-play-btn" aria-label="Play video">
+                            <Play size={28} fill="white" color="white" />
+                        </button>
+                        <span className="tv-facade-hint">Click to watch latest videos</span>
+                    </div>
+                )}
             </div>
 
             {/* Footer */}

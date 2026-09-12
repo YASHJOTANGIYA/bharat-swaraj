@@ -71,6 +71,15 @@ app.get('/', (req, res) => {
     res.send('Bharat Swaraj API is running');
 });
 
+// Lightweight ping endpoint for keep-alive and health checks
+app.get('/api/ping', (req, res) => {
+    res.json({ status: 'ok', uptime: process.uptime(), timestamp: new Date() });
+});
+
+app.get('/health', (req, res) => {
+    res.json({ status: 'healthy', timestamp: new Date() });
+});
+
 // Start Server
 if (process.env.VERCEL) {
     // Vercel Serverless Environment
