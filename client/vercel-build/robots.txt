@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://www.bharatswarajweekly.com/sitemap.xml
